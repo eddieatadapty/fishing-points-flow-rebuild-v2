@@ -1,0 +1,1991 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<!-- flow-rebuild template (Growth Audit, v3: + walkthrough video, phone view/QR, localization, paywall today vs proposed). Replace every double-brace placeholder, everything between
+     the SCREENS markers, and the CONTENT json. Rules that brand-check.py enforces are marked RULE.
+     Reference builds: eddieatadapty.github.io/datacamp-flow-rebuild-v2 · bterzic123.github.io/planner5d-flow-rebuild-v2 -->
+<title>Fishing Points Growth Audit</title>
+<meta name="description" content="Five ideas to turn more Fishing Points users into subscribers, each built into a clickable version of Fishing Points's own onboarding. Prepared by Adapty.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- the APP's font (brand.json fonts, or the closest Google family) + a mono if the app shows code -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* BRAND:START — the only place the APP's colours are written as literals. RULE: every value here is
+   copied from brand.json / a sampled pixel of the app's own screens; never "improved". Used only inside the phone. */
+:root{
+  --b-primary:#1e74c4;       /* in-app blue: quiz CTA, selected border, welcome bg */
+  --b-primary-ink:#ffffff;
+  --b-bg:#ffffff;
+  --b-surface:#ffffff;
+  --b-ink:#000000;
+  --b-ink2:#6c6a6d;          /* paywall secondary text */
+  --b-line:#dadadb;          /* quiz row border */
+  --b-accent2:#f8d20b;       /* yellow: welcome Continue, "Premium", "7-Day Free Trial" */
+  --b-tint:#e3edf9;          /* selected quiz row */
+  --b-track:#f3f2f3;         /* progress track */
+  --b-sheet:#f2f0f3;         /* paywall plan sheet */
+  --b-toggle:#e2e0e3;        /* paywall free-trial row */
+  --b-grad:linear-gradient(180deg,#235d98 0%,#0d3862 30%,#0b284a 52%,#061e3b 100%);
+  --b-glass:#3683cf;--b-glass-mid:#1670c8;--b-glass-low:#1566b6;   /* Liquid Glass Fish activity */
+  --b-apple:#000000;--b-google:#f7f5f8;--b-fb:#1267f8;--b-mail:#ed2736;   /* their sign-in buttons */
+  --b-radius:6px;            /* quiz rows */
+  --b-card:12px;             /* paywall plan cards */
+  --b-btn:5px;               /* rectangular CTAs */
+  --b-pill:999px;            /* paywall CTA */
+  --b-font:-apple-system,'SF Pro Display','SF Pro Text',Inter,system-ui,sans-serif;
+  --b-mono:ui-monospace,monospace;
+}
+/* BRAND:END */
+/* the phone's status bar turns white over their blue and navy screens (set by the hooks) */
+.lightbar .sbar{color:#fff}
+/* A second app family (e.g. a mono for code) is applied HERE, never in SCREENS css (brand-check allows only
+   var(--b-font) there). Prefix with .scr so it beats the screens' font shorthands, e.g.:
+   .scr .code,.scr .instr code{font-family:var(--b-mono)} */
+
+/* ================= the audit page — Adapty's, not the app's. Light, Apple-style. ================= */
+:root{
+  color-scheme:light;
+  --st-ground:#f5f5f7; --st-card:#ffffff; --st-ink:#1d1d1f; --st-ink2:#6e6e73; --st-ink3:#86868b;
+  --st-hair:rgba(0,0,0,.09); --st-link:#0066cc;
+  --st-accent:#0b284a;      /* Fishing Points paywall navy: buttons, the outcome band */
+  --st-hi:#f8d20b;          /* Fishing Points yellow: outcome numbers on the band, idea dots */
+  --st-mark:rgba(248,210,11,.5); /* the yellow at half strength: the highlighter under impact numbers */
+  --st-font:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:64px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+html,body{margin:0}
+body{background:var(--st-ground);color:var(--st-ink);font-family:var(--st-font);-webkit-font-smoothing:antialiased;font-size:17px;line-height:1.47}
+.au-wrap{max-width:1080px;margin:0 auto;padding-inline:22px}
+a{color:var(--st-link)}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--st-link);outline-offset:3px;border-radius:6px}
+mark{background:linear-gradient(transparent 62%,var(--st-mark) 62%,var(--st-mark) 92%,transparent 92%);color:inherit;padding:0 .04em}
+
+/* nav */
+.au-nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:rgba(245,245,247,.8);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--st-hair)}
+.au-nav-in{max-width:1080px;margin:0 auto;padding-inline:22px;height:52px;display:flex;align-items:center;gap:26px}
+.au-brand{display:flex;align-items:center;gap:10px;margin-right:auto;min-width:0}
+.au-brand img{width:26px;height:26px;border-radius:7px;flex:none}
+.au-brand span{font-size:15px;font-weight:600;letter-spacing:-.01em;white-space:nowrap}
+.au-brand small{font-size:15px;font-weight:400;color:var(--st-ink2)}
+.au-nav a{font-size:13px;color:var(--st-ink);text-decoration:none;opacity:.82}
+.au-nav a:hover{opacity:1}
+@media (max-width:560px){.au-nav a.au-opt{display:none}.au-brand small{display:none}}
+
+/* hero */
+.au-top-hero{text-align:center;padding-top:clamp(56px,9vw,96px);overflow:hidden;position:relative}
+.au-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:600;color:var(--st-ink);margin:0 0 14px}
+.au-eyebrow i{width:8px;height:8px;border-radius:50%;background:var(--st-hi);box-shadow:0 0 0 3px var(--st-mark)}
+.au-display{font-size:clamp(60px,12vw,120px);line-height:.98;font-weight:700;letter-spacing:-.05em;margin:0}
+.au-lede{font-size:clamp(23px,3.4vw,34px);line-height:1.16;font-weight:600;letter-spacing:-.022em;max-width:760px;margin:22px auto 0;text-wrap:balance}
+.au-lede span{color:var(--st-ink2)}
+.au-byline{font-size:14px;color:var(--st-ink3);margin:18px 0 0}
+.au-ctas{display:flex;gap:26px;justify-content:center;align-items:center;margin-top:30px;flex-wrap:wrap}
+.au-btn{display:inline-block;background:var(--st-accent);color:#fff;border-radius:980px;padding:12px 23px;font-size:17px;font-weight:500;text-decoration:none;border:0;cursor:pointer}
+.au-btn:hover{filter:brightness(1.25)}
+.au-lnk{background:none;border:0;padding:0;color:var(--st-link);font-size:17px;text-decoration:none;cursor:pointer}
+.au-lnk::after{content:"\00a0›"}
+.au-lnk:hover{text-decoration:underline}
+.au-phones{display:flex;justify-content:center;align-items:flex-start;margin-top:clamp(40px,6vw,64px);height:clamp(300px,52vw,560px)}
+.au-hp{flex:none;border:0;padding:0;background:none;cursor:pointer;width:27%;max-width:290px;margin:0 -2.5%;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.au-hp img{display:block;width:100%;height:auto;filter:drop-shadow(0 28px 50px rgba(0,0,0,.2))}
+.au-hp.au-c{width:31%;max-width:330px;z-index:2}
+.au-hp.au-l{transform:translateY(12%) rotate(-5deg)}
+.au-hp.au-r{transform:translateY(12%) rotate(5deg)}
+.au-hp.au-l:hover{transform:translateY(9%) rotate(-5deg)}.au-hp.au-r:hover{transform:translateY(9%) rotate(5deg)}.au-hp.au-c:hover{transform:translateY(-3%)}
+
+/* sections */
+.au-sec{padding-block:clamp(72px,10vw,120px)}
+.au-sec.au-white{background:var(--st-card)}
+.au-kicker{font-size:15px;font-weight:600;color:var(--st-ink2);margin:0 0 12px}
+.au-h2{font-size:clamp(34px,5.2vw,56px);line-height:1.06;font-weight:700;letter-spacing:-.035em;margin:0;text-wrap:balance}
+.au-h2 span{color:var(--st-ink3)}
+.au-split{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(28px,6vw,80px);align-items:end}
+.au-split p{margin:0;font-size:clamp(17px,1.7vw,21px);line-height:1.45;color:var(--st-ink2);letter-spacing:-.01em}
+.au-split p b{color:var(--st-ink);font-weight:600}
+.au-split p + p{margin-top:16px}
+.au-stats{display:grid;grid-template-columns:repeat(3,1fr);margin-top:clamp(48px,7vw,80px);border-top:1px solid var(--st-hair)}
+.au-stat{padding:28px 20px 0 0}
+.au-stat b{display:block;font-size:clamp(40px,5.5vw,64px);font-weight:700;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
+.au-stat span{display:block;font-size:15px;color:var(--st-ink2);margin-top:10px;max-width:22ch}
+.au-notes{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,3vw,40px);margin-top:clamp(48px,7vw,72px)}
+.au-note h3{font-size:19px;font-weight:600;letter-spacing:-.015em;margin:0 0 8px}
+.au-note p{margin:0;font-size:15.5px;line-height:1.5;color:var(--st-ink2)}
+.au-note .au-ic{width:36px;height:36px;border-radius:10px;background:var(--st-ground);display:grid;place-items:center;margin-bottom:16px}
+.au-note .au-ic svg{width:19px;height:19px;stroke:var(--st-accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* ideas */
+.au-ideas-h{margin-bottom:clamp(32px,5vw,48px)}
+.au-list{background:var(--st-card);border-radius:28px;padding-inline:clamp(20px,4vw,44px)}
+.au-idea{display:grid;grid-template-columns:56px 1fr 220px;gap:20px;align-items:start;padding-block:clamp(26px,3.5vw,36px);border-top:1px solid var(--st-hair)}
+.au-idea:first-child{border-top:0}
+.au-idea .au-num{font-size:15px;font-weight:600;color:var(--st-ink3);font-variant-numeric:tabular-nums;padding-top:6px}
+.au-idea h3{font-size:clamp(21px,2.4vw,26px);line-height:1.2;font-weight:600;letter-spacing:-.022em;margin:0 0 8px}
+.au-idea p{margin:0 0 12px;font-size:17px;line-height:1.5;color:var(--st-ink2);max-width:58ch}
+.au-idea p code{font:600 15px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--st-ink);background:var(--st-ground);padding:2px 7px;border-radius:6px}
+.au-idea .au-lnk{font-size:15px}
+.au-imp{text-align:right}
+.au-imp .au-v{font-size:clamp(30px,3.6vw,40px);font-weight:700;letter-spacing:-.035em;line-height:1;font-variant-numeric:tabular-nums;color:var(--st-accent)}
+.au-imp .au-l{font-size:13.5px;color:var(--st-ink2);margin-top:8px}
+.au-band{margin-top:20px;background:var(--st-accent);color:#fff;border-radius:28px;padding:clamp(32px,5vw,56px);display:grid;grid-template-columns:1fr auto;gap:clamp(28px,5vw,64px);align-items:center}
+.au-band .au-k{font-size:15px;font-weight:600;color:rgba(255,255,255,.62);margin:0 0 10px}
+.au-band h3{font-size:clamp(24px,3vw,32px);line-height:1.18;font-weight:600;letter-spacing:-.022em;margin:0;text-wrap:balance}
+.au-band .au-fn{font-size:13px;line-height:1.5;color:rgba(255,255,255,.55);margin:16px 0 0;max-width:52ch}
+.au-nums{display:flex;gap:clamp(28px,4vw,48px)}
+.au-nums small{display:block;font-size:13px;color:rgba(255,255,255,.62)}
+.au-nums b{display:block;font-size:clamp(48px,6.5vw,76px);font-weight:700;letter-spacing:-.045em;line-height:1;color:var(--st-hi);font-variant-numeric:tabular-nums;margin:4px 0 8px}
+.au-nums span{font-size:14px;color:rgba(255,255,255,.8)}
+.au-band .au-btn{background:var(--st-hi);color:var(--st-accent);font-weight:600;margin-top:26px}
+
+/* prototype */
+.au-proto-h{text-align:center;max-width:720px;margin:0 auto}
+.au-proto-h p{font-size:clamp(17px,1.7vw,21px);color:var(--st-ink2);margin:14px 0 0}
+.au-seg{display:flex;gap:4px;justify-content:center;margin:clamp(28px,4vw,40px) auto 0;padding:4px;background:var(--st-ground);border-radius:980px;width:max-content;max-width:100%;overflow-x:auto;scrollbar-width:none}
+.au-seg::-webkit-scrollbar{display:none}
+.au-chip{flex:none;display:inline-flex;align-items:center;gap:6px;background:none;border:0;color:var(--st-ink2);font-size:13.5px;font-weight:500;padding:8px 14px;border-radius:980px;cursor:pointer;white-space:nowrap}
+.au-chip:hover{color:var(--st-ink)}
+.au-chip.on{background:var(--st-card);color:var(--st-ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.au-chip i{font-style:normal;font-size:11px;font-weight:700;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;background:var(--st-hi);color:var(--st-accent)}
+.au-stage{display:grid;grid-template-columns:auto minmax(0,420px);gap:clamp(32px,6vw,72px);justify-content:center;align-items:center;margin-top:clamp(28px,4vw,44px)}
+.phone{width:390px;height:844px;border-radius:56px;padding:10px;background:#0b0d10;box-shadow:0 0 0 1.5px #3a3d42,0 40px 90px rgba(0,0,0,.25);max-width:calc(100vw - 44px)}
+.phone-in{position:relative;width:100%;height:100%;border-radius:46px;overflow:hidden;background:var(--b-bg)}
+.island{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:120px;height:34px;border-radius:20px;background:#000;z-index:9}
+.sbar{position:absolute;top:0;left:0;right:0;height:52px;display:flex;justify-content:space-between;align-items:center;padding:4px 32px 0;font:600 15px -apple-system,system-ui,sans-serif;color:var(--b-ink);z-index:8;pointer-events:none}
+.au-pn{background:var(--st-ground);border-radius:28px;padding:clamp(26px,3.5vw,38px)}
+.au-pn-k{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--st-ink)}
+.au-pn-k i{width:8px;height:8px;border-radius:50%;background:var(--st-hi);box-shadow:0 0 0 3px var(--st-mark)}
+.au-pn-k.au-ctx{color:var(--st-ink2)}.au-pn-k.au-ctx i{background:var(--st-ink3);box-shadow:none}
+.au-pn-t{font-size:clamp(24px,2.6vw,30px);line-height:1.12;font-weight:700;letter-spacing:-.028em;margin:10px 0 14px;text-wrap:balance}
+.au-pn-h{margin:0;font-size:17px;line-height:1.55;color:var(--st-ink2)}
+.au-pn-h b{color:var(--st-ink);font-weight:600}
+.au-pn-o{margin-top:24px;padding-top:22px;border-top:1px solid var(--st-hair)}
+.au-pn-o .au-lab{font-size:13px;font-weight:600;color:var(--st-ink3)}
+.au-pn-o .au-val{font-size:clamp(38px,4.4vw,50px);font-weight:700;letter-spacing:-.04em;line-height:1.05;color:var(--st-accent);margin-top:6px;font-variant-numeric:tabular-nums}
+.au-pn-o .au-sub{font-size:14px;color:var(--st-ink2);margin-top:4px}
+.au-pn-a{margin:18px 0 0;font-size:14px;line-height:1.5;color:var(--st-ink2)}
+.au-pn-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:28px;padding-top:18px;border-top:1px solid var(--st-hair);font-size:13px;color:var(--st-ink3)}
+.au-pn-nav button{background:var(--st-card);border:0;border-radius:980px;padding:8px 15px;font-size:14px;font-weight:500;color:var(--st-ink);cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.au-pn-nav button:disabled{opacity:.35;cursor:default}
+.au-hint{text-align:center;font-size:14px;color:var(--st-ink3);margin:22px 0 0}
+
+/* footer */
+.au-foot{padding-block:56px 72px;border-top:1px solid var(--st-hair)}
+.au-foot details{border-bottom:1px solid var(--st-hair);padding-bottom:18px}
+.au-foot summary{cursor:pointer;font-size:17px;font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center}
+.au-foot summary::-webkit-details-marker{display:none}
+.au-foot summary::after{content:"+";font-size:24px;font-weight:300;color:var(--st-ink2)}
+.au-foot details[open] summary::after{content:"−"}
+.au-srcs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 48px;margin-top:18px}
+.au-srcs h4{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--st-ink3);margin:18px 0 6px}
+.au-srcs dl{margin:0}.au-srcs dt{font-size:14.5px;font-weight:600;margin-top:10px}
+.au-srcs dd{margin:3px 0 0;font-size:14px;line-height:1.5;color:var(--st-ink2)}
+.au-fine{font-size:12.5px;line-height:1.6;color:var(--st-ink3);margin:22px 0 0;max-width:80ch}
+.au-cta-line{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;margin-top:36px}
+.au-cta-line p{margin:0;font-size:clamp(19px,2.2vw,24px);font-weight:600;letter-spacing:-.02em;max-width:34ch}
+
+@media (max-width:900px){
+  .au-split,.au-band{grid-template-columns:1fr}
+  .au-notes{grid-template-columns:1fr}
+  .au-idea{grid-template-columns:40px 1fr}
+  .au-imp{grid-column:2;text-align:left;display:flex;align-items:baseline;gap:10px}
+  .au-imp .au-l{margin:0}
+  .au-imp .au-v{white-space:nowrap}
+  .au-stage{grid-template-columns:1fr;justify-items:center}
+  .au-pn{width:100%;max-width:520px}
+  .au-srcs{grid-template-columns:1fr}
+}
+@media (max-width:560px){.au-stats{grid-template-columns:1fr}.au-stat{padding:22px 0 0}.au-nums{flex-direction:column;gap:18px}}
+
+/* ================= extras (audit side): video, language, phone view + QR, paywall today vs proposed, ?tour ================= */
+[hidden]{display:none!important}
+/* the device never scrolls: off-screen slides would otherwise make it scrollable by focus / scrollIntoView */
+.phone-in,.scr{overflow:clip}
+/* hero: walkthrough link */
+.au-play::before{content:"▶";font-size:.72em;margin-right:7px;position:relative;top:-1px}
+/* video dialog */
+.au-vid{border:0;padding:0;background:transparent;max-width:min(1120px,94vw);width:100%;overflow:visible}
+.au-vid::backdrop{background:rgba(0,0,0,.74);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.au-vid-in{background:#000;border-radius:18px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.4)}
+.au-vid video{display:block;width:100%;aspect-ratio:16/9;background:#000}
+.au-vid-bar{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 4px 0;font-size:14px}
+.au-vid-bar a{color:#fff;opacity:.85}
+.au-vid-x{background:rgba(255,255,255,.16);border:0;color:#fff;border-radius:980px;padding:8px 16px;font-size:14px;cursor:pointer}
+/* language switch */
+.au-langrow{display:flex;justify-content:center;align-items:center;gap:12px;margin:18px 0 0;font-size:13.5px;color:var(--st-ink2);flex-wrap:wrap}
+.au-lsw{display:inline-flex;gap:2px;padding:3px;background:var(--st-ground);border-radius:980px}
+.au-lsw button{border:0;background:none;padding:6px 13px;border-radius:980px;font-size:13.5px;font-weight:500;color:var(--st-ink2);cursor:pointer;white-space:nowrap}
+.au-lsw button.on{background:var(--st-card);color:var(--st-ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+/* QR card (desktop) / full-screen button (phone) */
+.au-qr{display:flex;align-items:center;gap:18px;margin:26px auto 0;max-width:500px;background:var(--st-ground);border-radius:22px;padding:14px 22px 14px 14px}
+.au-qr img{width:112px;height:112px;border-radius:12px;image-rendering:pixelated;flex:none;background:#fff}
+.au-qr b{display:block;font-size:17px;font-weight:600;letter-spacing:-.01em}
+.au-qr p{margin:4px 0 0;font-size:14.5px;line-height:1.45;color:var(--st-ink2)}
+.au-mobw{display:none;text-align:center;margin-top:22px}
+@media (max-width:900px){.au-qr{display:none}.au-mobw{display:block}}
+/* paywall: today vs proposed */
+.au-cmp{display:grid;grid-template-columns:minmax(0,290px) minmax(0,1fr) minmax(0,290px);gap:clamp(24px,4vw,52px);align-items:center;margin-top:clamp(32px,5vw,52px)}
+.au-cmp figure{margin:0;text-align:center}
+.au-cmp figure img{display:block;width:100%;height:auto;filter:drop-shadow(0 24px 44px rgba(0,0,0,.18))}
+.au-cmp figcaption{margin-top:14px;font-size:15px;font-weight:600}
+.au-cmp figcaption span{color:var(--st-ink2);font-weight:400}
+.au-cmp-go{border:0;padding:0;background:none;cursor:pointer;display:block;width:100%;transition:transform .3s}
+.au-cmp-go:hover{transform:translateY(-4px)}
+.au-chg{list-style:none;margin:0;background:var(--st-card);border-radius:24px;padding:4px clamp(18px,2.4vw,28px)}
+.au-chg li{padding:15px 0;border-top:1px solid var(--st-hair)}
+.au-chg li:first-child{border-top:0}
+.au-chg h4{margin:0 0 7px;font-size:16px;font-weight:600;letter-spacing:-.01em;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.au-chg h4 i{font-style:normal;font-size:12px;font-weight:600;color:var(--st-accent);background:var(--st-mark);border-radius:6px;padding:2px 8px;white-space:nowrap}
+.au-was,.au-now{display:grid;grid-template-columns:78px 1fr;gap:8px;font-size:14.5px;line-height:1.42}
+.au-was{color:var(--st-ink3)}
+.au-now{color:var(--st-ink);margin-top:3px}
+.au-was em,.au-now em{font-style:normal;font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding-top:2px}
+.au-now em{color:var(--st-link)}
+.au-kept{margin:22px 0 0;font-size:14px;color:var(--st-ink2);text-align:center}
+@media (max-width:900px){.au-cmp{grid-template-columns:1fr 1fr;gap:18px}.au-chg{grid-column:1 / -1;order:3}.au-was,.au-now{grid-template-columns:70px 1fr}}
+
+/* ?app — the prototype full screen on a real phone, with a bar that opens the idea panel */
+html.appmode,html.appmode body{height:100%;overflow:hidden;background:#000}
+html.appmode .au-nav,html.appmode .au-top-hero,html.appmode #why,html.appmode #ideas,html.appmode #compare,html.appmode .au-foot,
+html.appmode .au-proto-h,html.appmode #prototype .au-langrow,html.appmode #chips,html.appmode .au-hint,html.appmode .au-qr,html.appmode .au-mobw{display:none!important}
+html.appmode #prototype{padding:0;background:#000}
+html.appmode #prototype .au-wrap{padding:0;max-width:none}
+html.appmode .au-stage{display:block;margin:0}
+html.appmode .phone{position:fixed;top:0;left:0;right:0;margin:0 auto;width:min(100%,480px);height:calc(100% - 56px - env(safe-area-inset-bottom,0px));max-width:none;border-radius:0;padding:0;box-shadow:none;background:#000}
+html.appmode .phone-in{border-radius:0}
+html.appmode .island,html.appmode .sbar{display:none}
+html.appmode .scr .s-pad{padding-top:max(58px,calc(env(safe-area-inset-top,0px) + 16px))}
+html.appmode .scr .s-x,html.appmode .scr .s-lang{top:max(54px,calc(env(safe-area-inset-top,0px) + 10px))}
+.au-appbar,.au-scrim{display:none}
+html.appmode .au-appbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:70;height:calc(56px + env(safe-area-inset-bottom,0px));padding:0 12px env(safe-area-inset-bottom,0px) 16px;align-items:center;gap:12px;background:#0b0b0c;border-top:1px solid rgba(255,255,255,.1);color:#fff}
+.au-ab-why{flex:1;min-width:0;display:flex;align-items:center;gap:9px;background:none;border:0;color:#fff;font-size:14px;font-weight:500;text-align:left;cursor:pointer;padding:0}
+.au-ab-why i{width:8px;height:8px;border-radius:50%;background:var(--st-hi);flex:none}
+.au-ab-why span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.au-ab-why em{font-style:normal;color:rgba(255,255,255,.6);margin-left:auto;flex:none;font-size:13px}
+.au-appbar .au-lsw{background:rgba(255,255,255,.12)}
+.au-appbar .au-lsw button{color:rgba(255,255,255,.75);padding:5px 11px}
+.au-appbar .au-lsw button.on{background:#fff;color:#000}
+html.appmode #panel{position:fixed;left:0;right:0;bottom:0;z-index:80;max-width:none;width:auto;margin:0 auto;border-radius:24px 24px 0 0;max-height:78%;overflow:auto;transform:translateY(105%);transition:transform .3s cubic-bezier(.3,.7,.2,1);padding-bottom:calc(26px + env(safe-area-inset-bottom,0px))}
+html.appmode.au-open #panel{transform:none}
+html.appmode.au-open .au-scrim{display:block;position:fixed;inset:0;z-index:75;background:rgba(0,0,0,.5)}
+
+/* ?tour — 1280×720 walkthrough frames (record-video.sh renders them into assets/walkthrough.mp4) */
+.au-tour{display:none}
+html.tourmode,html.tourmode body{overflow:hidden;background:var(--st-ground)}
+html.tourmode body *{visibility:hidden}
+html.tourmode .phone,html.tourmode .phone *,html.tourmode .au-tour,html.tourmode .au-tour *{visibility:visible}
+html.tourmode .phone{position:fixed;left:170px;top:44px;margin:0;transform:scale(.755);transform-origin:0 0;box-shadow:0 0 0 1.5px #3a3d42,0 34px 80px rgba(0,0,0,.22);z-index:5;max-width:none}
+html.tourmode .au-tour{display:block;position:fixed;inset:0;z-index:6;pointer-events:none;color:var(--st-ink)}
+.au-tb{position:absolute;left:590px;top:30px;display:flex;align-items:center;gap:10px;font-size:16px;font-weight:600}
+.au-tb img{width:26px;height:26px;border-radius:7px}
+.au-tb small{font-size:16px;font-weight:400;color:var(--st-ink2)}
+.au-tby{position:absolute;right:48px;top:32px;font-size:14px;color:var(--st-ink3)}
+.au-tcap{position:absolute;left:590px;right:60px;top:50%;transform:translateY(-50%)}
+.au-tk{display:flex;align-items:center;gap:9px;font-size:17px;font-weight:600}
+.au-tk i{width:9px;height:9px;border-radius:50%;background:var(--st-hi);box-shadow:0 0 0 3px var(--st-mark)}
+.au-tk.au-ctx{color:var(--st-ink2)}.au-tk.au-ctx i{background:var(--st-ink3);box-shadow:none}
+.au-tt{font-size:46px;line-height:1.06;font-weight:700;letter-spacing:-.035em;margin:14px 0 14px;text-wrap:balance}
+.au-tl{font-size:23px;line-height:1.36;color:var(--st-ink2);letter-spacing:-.01em;margin:0;max-width:28ch}
+.au-to{margin-top:28px;padding-top:22px;border-top:1px solid var(--st-hair)}
+.au-to small{display:block;font-size:14px;font-weight:600;color:var(--st-ink3)}
+.au-to b{display:inline-block;font-size:62px;font-weight:700;letter-spacing:-.045em;line-height:1.08;color:var(--st-accent);margin-top:4px}
+.au-to span{display:block;font-size:16px;color:var(--st-ink2);margin-top:2px}
+.au-tprog{position:absolute;left:48px;right:48px;bottom:22px;height:4px;border-radius:3px;background:var(--st-hair);overflow:hidden}
+.au-tprog i{display:block;height:100%;background:var(--st-hi)}
+.au-ttap{position:absolute;left:0;top:0;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(255,255,255,.5);box-shadow:0 0 0 2.5px rgba(255,255,255,.9),0 6px 16px rgba(0,0,0,.35);opacity:0}
+.au-tintro,.au-tend{position:absolute;inset:0;background:var(--st-ground);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;opacity:0}
+.au-tintro .au-lede{margin-top:18px}
+.au-te-h{font-size:46px;line-height:1.08;font-weight:700;letter-spacing:-.035em;margin:0;max-width:18ch;text-wrap:balance}
+.au-te-n{display:flex;gap:64px;margin-top:30px}
+.au-te-n small{display:block;font-size:14px;color:var(--st-ink2)}
+.au-te-n b{display:block;font-size:76px;font-weight:700;letter-spacing:-.045em;line-height:1;color:var(--st-accent);margin:4px 0 6px}
+.au-te-n span{font-size:15px;color:var(--st-ink2)}
+.au-te-q{display:flex;align-items:center;gap:18px;margin-top:34px;background:var(--st-card);border-radius:20px;padding:12px 24px 12px 12px;text-align:left}
+.au-te-q img{width:104px;height:104px;border-radius:10px;image-rendering:pixelated}
+.au-te-q b{display:block;font-size:18px;font-weight:600}
+.au-te-q span{display:block;font-size:15px;color:var(--st-link);margin-top:3px}
+.au-te-f{position:absolute;bottom:44px;left:0;right:0;font-size:13px;color:var(--st-ink3);margin:0}
+
+/* ---------- screen engine (layout only, no colours) ---------- */
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--b-bg);color:var(--b-ink);font-family:var(--b-font);
+     transform:translateX(100%);transition:transform .32s cubic-bezier(.3,.7,.2,1);overflow:hidden;text-align:left;line-height:normal;font-size:16px}
+.scr.is-active{transform:none;z-index:2}.scr.is-past{transform:translateX(-28%)}.scr.under{transform:none;z-index:1}
+.scr.sheet{transform:translateY(100%)}.scr.sheet.is-active{transform:none}
+.nofx,.nofx *{transition:none!important}
+.shot .scr{transition:none!important}
+/* ?phone — just the device at (10,10), for shoot.sh and hero-stills.sh (&clear = transparent ground) */
+.phoneonly body{background:#141615}
+.phoneonly.clear body{background:transparent}
+.phoneonly body *{visibility:hidden}
+.phoneonly .phone,.phoneonly .phone *{visibility:visible}
+.phoneonly .phone{position:fixed;top:10px;left:10px;z-index:99;box-shadow:none;max-width:none;margin:0}
+
+/* SCREENS:START — styles for the app's screens. RULE: colours only via var(--b-*), or white/black
+   with alpha (scrims, shadows). RULE: no class name that the audit page above already uses
+   (.hero .btn .chip .list .idea .note .stat .band .num .hint .display .split …) — brand-check refuses collisions. */
+.ic{display:inline-flex;width:22px;height:22px;flex:none}.ic svg{width:100%;height:100%;display:block}
+.scr button{font-family:var(--b-font)}
+
+/* welcome — their screen, unchanged */
+.wel{background:var(--b-primary);color:var(--b-primary-ink)}
+.wel .hero-ph{display:block;width:100%;height:auto;flex:none}
+.wel .in{flex:1;display:flex;flex-direction:column;padding:6px 30px 44px}
+.wel h1{font:700 32px/1.13 var(--b-font);margin:0;letter-spacing:-.2px}
+.wel .wsub{font:600 15.5px/1.36 var(--b-font);margin:14px 0 0}
+.wel .legal2{margin:auto -14px 0;text-align:center;font:400 12.5px/1.5 var(--b-font)}
+.wel .legal2 a{color:var(--b-accent2);text-decoration:none}
+.ybtn{align-self:center;margin-top:30px;width:48%;height:46px;border:0;border-radius:var(--b-btn);background:var(--b-accent2);color:var(--b-ink);font:600 16.5px var(--b-font);cursor:pointer;box-shadow:0 2px 5px rgba(0,0,0,.14)}
+
+/* quiz — their component */
+.q{background:var(--b-bg)}
+.qtop{display:flex;align-items:center;gap:22px;padding:62px 20px 0 16px;flex:none}
+.bk{background:none;border:0;padding:0;width:22px;height:22px;color:var(--b-primary);cursor:pointer;flex:none}
+.bk svg{width:22px;height:22px;display:block}
+.track{flex:1;height:7px;border-radius:4px;background:var(--b-track);overflow:hidden}.track i{display:block;height:100%;border-radius:4px;background:var(--b-primary)}
+.qb{flex:1;display:flex;flex-direction:column;padding:0 16px 36px;min-height:0}
+.qh{font:700 23px/1.36 var(--b-font);color:var(--b-primary);margin:24px 0 0;text-shadow:0 2px 5px rgba(0,0,0,.14)}
+.qs{font:400 14.5px var(--b-font);color:var(--b-ink);margin:10px 0 0}
+.opts{display:flex;flex-direction:column;gap:11px;margin-top:28px}
+.opt{height:54px;border:1.5px solid var(--b-line);border-radius:var(--b-radius);background:var(--b-surface);font:400 15px var(--b-font);color:var(--b-ink);cursor:pointer;width:100%}
+.opt.on{background:var(--b-tint);border-color:var(--b-primary);color:var(--b-primary);font-weight:500}
+.opts.m{gap:8px;margin-top:20px}
+.mo{display:flex;align-items:center;gap:14px;height:46px;padding:0 14px;border:1.5px solid var(--b-line);border-radius:var(--b-radius);background:var(--b-surface);font:400 14.5px var(--b-font);color:var(--b-ink);cursor:pointer;text-align:left;width:100%}
+.mo .ic{width:20px;height:20px}
+.mo .ml{flex:1}
+.cb{width:21px;height:21px;border:1.5px solid var(--b-line);border-radius:5px;display:flex;align-items:center;justify-content:center;color:var(--b-primary-ink);flex:none}
+.cb svg{width:14px;height:14px;opacity:0}
+.mo.on{background:var(--b-tint);border-color:var(--b-primary);color:var(--b-primary);font-weight:500}
+.mo.on .cb{background:var(--b-primary);border-color:var(--b-primary)}.mo.on .cb svg{opacity:1}
+.qcta{margin:auto auto 0;width:54%;height:44px;flex:none;border:0;border-radius:var(--b-btn);background:var(--b-primary);color:var(--b-primary-ink);font:600 15px var(--b-font);cursor:pointer}
+.qcta:disabled{opacity:.45}
+
+/* loader — their ring, reading the answers back */
+.ld{background:var(--b-bg);align-items:center}
+.ldc{margin-top:178px;position:relative;width:132px;height:132px;flex:none}
+.ldc svg{width:132px;height:132px;transform:rotate(-90deg);display:block}
+.ldc .pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:700 27px var(--b-font);color:var(--b-ink)}
+.ld .lt{font:600 15.5px var(--b-font);color:var(--b-ink);margin:24px 0 0}
+.echo{list-style:none;margin:24px 0 0;padding:0;display:flex;flex-direction:column;gap:12px;width:282px}
+.echo li{display:flex;gap:11px;align-items:center;font:400 14px/1.3 var(--b-font);color:var(--b-ink2);opacity:.4}
+.echo li.done{opacity:1;color:var(--b-ink)}
+.echo .tk{width:19px;height:19px;border-radius:50%;background:var(--b-line);display:flex;align-items:center;justify-content:center;color:var(--b-primary-ink);flex:none}
+.echo li.done .tk{background:var(--b-primary)}
+.echo .tk svg{width:11px;height:11px}
+.lproof{margin:auto 0 44px;width:322px;background:var(--b-tint);border-radius:var(--b-card);padding:14px 18px;text-align:center;min-height:86px;display:flex;flex-direction:column;justify-content:center}
+.lproof b{display:block;font:700 18px var(--b-font);color:var(--b-primary)}
+.lproof span{display:block;font:400 13px/1.45 var(--b-font);color:var(--b-ink);margin-top:4px}
+
+/* payoff — idea 1 */
+.po{background:var(--b-bg)}
+.po .ptop{position:relative;height:300px;background:var(--b-tint);overflow:hidden;flex:none}
+.po .ptop img{position:absolute;left:50%;top:56px;width:214px;transform:translateX(-50%);filter:drop-shadow(0 14px 22px rgba(0,0,0,.2))}
+.po .ptop:after{content:"";position:absolute;left:0;right:0;bottom:0;height:60px;background:linear-gradient(rgba(255,255,255,0),rgba(255,255,255,1))}
+.po .in{flex:1;display:flex;flex-direction:column;padding:0 20px 36px;margin-top:-14px;position:relative;min-height:0}
+.po h1{font:700 24px/1.22 var(--b-font);color:var(--b-primary);margin:0;text-shadow:0 2px 5px rgba(0,0,0,.12)}
+.po .meta{font:500 14px var(--b-font);color:var(--b-ink2);margin:6px 0 0}
+.po .lab{font:700 11px var(--b-font);letter-spacing:.07em;text-transform:uppercase;color:var(--b-ink2);margin:16px 0 4px}
+.pl .r{display:flex;gap:12px;align-items:flex-start;padding:8px 0;border-top:1px solid var(--b-line)}
+.pl .r:first-child{border-top:0}
+.pl .ic{color:var(--b-primary);width:21px;height:21px;margin-top:1px}
+.pl b{display:block;font:600 14.5px var(--b-font);color:var(--b-ink)}
+.pl small{display:block;font:400 12.5px/1.35 var(--b-font);color:var(--b-ink2);margin-top:1px}
+
+/* Fish activity — their Liquid Glass forecast (preview = idea 4, home = after purchase) */
+.fa{background:linear-gradient(180deg,var(--b-glass) 0%,var(--b-glass-mid) 34%,var(--b-glass-low) 100%);color:var(--b-primary-ink)}
+.fa .fhd{display:flex;align-items:flex-start;justify-content:space-between;padding:56px 18px 0;flex:none}
+.fa .ftt{font:700 29px/1.1 var(--b-font);margin:0;letter-spacing:-.3px;white-space:nowrap}
+.fa .ftt.long{font-size:23px;padding-top:4px}
+.fa .floc{display:flex;align-items:center;gap:5px;font:600 14px var(--b-font);margin-top:4px}
+.fa .floc svg{width:13px;height:13px}
+.fa .floc small{font-weight:400;opacity:.75;margin-left:4px}
+.fa .gb{display:flex;gap:8px}
+.fa .gb span{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.62);color:var(--b-ink);display:flex;align-items:center;justify-content:center;box-shadow:inset 0 1px 0 rgba(255,255,255,.7)}
+.fa .gb svg{width:19px;height:19px}
+.fdays{display:grid;grid-template-columns:repeat(7,1fr);padding:14px 10px 0;text-align:center;flex:none}
+.fdays div{position:relative;font:600 17px/1.1 var(--b-font);padding-bottom:7px}
+.fdays small{display:block;font:400 12.5px var(--b-font);opacity:.85;margin-top:2px}
+.fdays .past{opacity:.72}
+.fdays .now small{font-weight:700;opacity:1}
+.fdays .now:after{content:"";position:absolute;left:30%;right:30%;bottom:0;height:2px;border-radius:2px;background:var(--b-primary-ink)}
+.fdays .lk{color:rgba(255,255,255,.5)}
+.fdays .lk i{position:absolute;top:-6px;right:4px;width:15px;height:15px;border-radius:50%;background:var(--b-accent2);color:var(--b-ink);display:flex;align-items:center;justify-content:center}
+.fdays .lk i svg{width:9px;height:9px}
+.fg{position:relative;width:150px;height:150px;margin:18px auto 0;flex:none}
+.fg svg{position:absolute;inset:0;width:150px;height:150px}
+.fg b{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font:300 52px/1 var(--b-font)}
+.fg b small{font-size:12px;letter-spacing:2px;margin-top:4px}
+.fst{text-align:center;font:400 21px var(--b-font);margin:12px 0 0;flex:none}
+.fch{display:block;width:100%;height:92px;margin-top:14px;flex:none}
+.fchb{flex:1;background:rgba(255,255,255,.16)}
+.fsheet{position:absolute;left:0;right:0;bottom:0;background:var(--b-surface);color:var(--b-ink);border-radius:24px 24px 0 0;padding:20px 20px 34px;box-shadow:0 -10px 30px rgba(0,0,0,.18);display:flex;flex-direction:column}
+.fsheet .fk{display:flex;align-items:center;gap:8px;font:700 20px var(--b-font);color:var(--b-primary)}
+.fsheet .fk i{width:26px;height:26px;border-radius:50%;background:var(--b-accent2);color:var(--b-ink);display:flex;align-items:center;justify-content:center;flex:none}
+.fsheet .fk i svg{width:13px;height:13px}
+.fsheet p{font:400 14.5px/1.4 var(--b-font);color:var(--b-ink);margin:6px 0 0}
+.fcmp{margin-top:12px}
+.fcmp .h,.fcmp .r{display:grid;grid-template-columns:1fr 62px 78px;align-items:center}
+.fcmp .h{font:600 10.5px var(--b-font);letter-spacing:.07em;text-transform:uppercase;color:var(--b-ink2);padding-bottom:4px}
+.fcmp .h span:nth-child(n+2),.fcmp .r span:nth-child(n+2){text-align:center}
+.fcmp .h span:nth-child(3){color:var(--b-primary)}
+.fcmp .r{font:400 13.5px var(--b-font);padding:7px 0;border-top:1px solid var(--b-line)}
+.fcmp .r span:nth-child(2){color:var(--b-ink2)}
+.fcmp .r span:nth-child(3){font-weight:700;color:var(--b-primary)}
+.fsheet .qcta{margin-top:16px}
+.ftimes{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:18px 20px 0;text-align:center;flex:none}
+.ftimes small{display:block;font:500 11px var(--b-font);letter-spacing:.06em;text-transform:uppercase;opacity:.8}
+.ftimes b{display:block;font:400 15px var(--b-font);margin-top:4px;white-space:nowrap}
+.toast{position:absolute;left:50%;top:330px;transform:translateX(-50%);background:var(--b-surface);color:var(--b-ink);border-radius:14px;padding:16px 18px 6px;text-align:center;box-shadow:0 12px 34px rgba(0,0,0,.28);width:262px;z-index:3}
+.toast b{display:block;font:600 16px var(--b-font)}
+.toast span{display:block;font:400 13px var(--b-font);margin-top:3px}
+.toast button{margin-top:10px;width:100%;border:0;border-top:1px solid var(--b-line);background:none;color:var(--b-primary);font:600 16px var(--b-font);padding:10px 0;cursor:pointer}
+
+/* paywall — their art direction (proposed + today) */
+.pw{background:var(--b-grad);color:var(--b-primary-ink)}
+.pw .pnav{display:flex;justify-content:space-between;padding:52px 18px 0;flex:none}
+.pw .pnav button,.pw .pnav span{background:none;border:0;color:var(--b-primary-ink);font:400 16px var(--b-font);padding:0;cursor:pointer}
+.pw h1{text-align:center;font:700 27px/1.1 var(--b-font);margin:0}
+.pw h1 em{font-style:normal;color:var(--b-accent2)}
+.pw .tri{text-align:center;color:var(--b-accent2);font:700 18px var(--b-font);margin:6px 0 0}
+.pw .art{display:block;width:300px;margin:2px auto 0;-webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 55%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 55%,transparent 100%)}
+.pw .waves{display:block;width:290px;margin:6px auto 0;-webkit-mask-image:radial-gradient(ellipse 50% 60% at 50% 55%,#000 60%,transparent 100%);mask-image:radial-gradient(ellipse 50% 60% at 50% 55%,#000 60%,transparent 100%)}
+.pw .cm{text-align:center}
+.pw .cm b{display:block;font:700 18px var(--b-font)}
+.pw .cm span{display:block;font:400 13px/1.38 var(--b-font);opacity:.92;margin:3px 26px 0}
+.pw .perf{text-align:center;font:700 18px var(--b-font);margin:4px 0 14px}
+.pproof{margin:12px 18px 14px;border:1px solid rgba(255,255,255,.18);border-radius:var(--b-card);background:rgba(255,255,255,.06);padding:10px 12px;text-align:center}
+.pproof b{display:block;font:600 14px var(--b-font)}
+.pproof .stars{color:var(--b-accent2);letter-spacing:1px;margin-right:6px}
+.pproof small{display:block;font:400 12.5px/1.4 var(--b-font);opacity:.85;margin-top:3px}
+.sheetp{margin-top:auto;background:var(--b-sheet);padding:12px 16px 30px;color:var(--b-ink);display:flex;flex-direction:column;gap:9px;flex:none}
+.trow{display:flex;align-items:center;justify-content:space-between;background:var(--b-toggle);border-radius:14px;height:44px;padding:0 10px 0 16px;font:400 15px var(--b-font);color:var(--b-ink);cursor:pointer;border:0;width:100%}
+.sw{width:50px;height:30px;border-radius:15px;background:var(--b-line);position:relative;flex:none}
+.sw:after{content:"";position:absolute;top:2px;left:2px;width:26px;height:26px;border-radius:50%;background:var(--b-surface);box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.sw.on{background:var(--b-primary)}.sw.on:after{transform:translateX(20px)}
+.pc{display:block;width:100%;text-align:left;background:var(--b-surface);border:2px solid transparent;border-radius:var(--b-card);padding:0;cursor:pointer;overflow:hidden;color:var(--b-ink)}
+.pc.on{border-color:var(--b-primary)}
+.pc .band{display:block;background:var(--b-primary);color:var(--b-primary-ink);text-align:center;font:600 12.5px var(--b-font);padding:3px 0}
+.pc .bd{display:flex;align-items:center;justify-content:space-between;padding:8px 14px 9px;gap:8px}
+.pc .nm{display:block;font:700 19px var(--b-font)}
+.pc .tm{display:block;font:400 12px var(--b-font);margin-top:1px;white-space:nowrap}
+.pc .pm{font:400 14.5px var(--b-font);white-space:nowrap}
+.pill{width:100%;height:52px;flex:none;border:0;border-radius:var(--b-pill);background:var(--b-primary);color:var(--b-primary-ink);font:700 17px var(--b-font);cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,.18)}
+.trust{text-align:center;font:400 12px var(--b-font);color:var(--b-ink2);margin:-2px 0 0}
+.terms{display:flex;justify-content:center;gap:16px;font:400 11px var(--b-font);color:var(--b-ink2)}
+
+/* offer on close — idea 5 */
+.of{background:var(--b-bg)}
+.of .ohd{position:relative;background:var(--b-grad);color:var(--b-primary-ink);padding:70px 24px 0;height:222px;flex:none;text-align:center;overflow:hidden}
+.of .ohd img{position:absolute;left:50%;bottom:-4px;width:300px;transform:translateX(-50%);-webkit-mask-image:radial-gradient(ellipse 50% 60% at 50% 60%,#000 60%,transparent 100%);mask-image:radial-gradient(ellipse 50% 60% at 50% 60%,#000 60%,transparent 100%)}
+.of .ohd h2{font:700 25px/1.18 var(--b-font);margin:0}
+.of .xb{position:absolute;top:54px;right:16px;background:none;border:0;color:var(--b-primary-ink);font:400 22px var(--b-font);cursor:pointer;opacity:.85;padding:0}
+.of .in{flex:1;display:flex;flex-direction:column;padding:18px 22px 24px;min-height:0}
+.of h3{font:700 22px var(--b-font);color:var(--b-primary);margin:0;text-shadow:0 2px 5px rgba(0,0,0,.12)}
+.of .pr{font:400 14.5px var(--b-font);color:var(--b-ink2);margin:4px 0 0}
+.tl{list-style:none;margin:16px 0 0;padding:0}
+.tl li{position:relative;padding:0 0 13px 36px}
+.tl li:before{content:"";position:absolute;left:10px;top:22px;bottom:0;width:2px;background:var(--b-line)}
+.tl li:last-child:before{display:none}
+.tl .dt{position:absolute;left:0;top:0;width:22px;height:22px;border-radius:50%;background:var(--b-tint);color:var(--b-primary);display:flex;align-items:center;justify-content:center}
+.tl .dt svg{width:12px;height:12px}
+.tl li:first-child .dt{background:var(--b-primary);color:var(--b-primary-ink)}
+.tl b{display:block;font:600 14.5px var(--b-font);color:var(--b-ink)}
+.tl .tx{display:block;font:400 13px/1.4 var(--b-font);color:var(--b-ink2);margin-top:1px}
+.rv{background:var(--b-sheet);border-radius:var(--b-card);padding:11px 14px;font:400 13px/1.45 var(--b-font);color:var(--b-ink);margin-top:4px}
+.rv .stars{font-size:12px;display:block;margin-bottom:2px;color:var(--b-accent2);letter-spacing:1px}
+.rv small{display:block;color:var(--b-ink2);margin-top:3px;font-size:12px}
+.of .opc{margin-top:auto;margin-bottom:12px;cursor:default}
+.lnk{background:none;border:0;color:var(--b-primary);font:500 15px var(--b-font);padding:12px 0 0;cursor:pointer;align-self:center}
+
+/* sign in — their sheet, moved (idea 2) */
+.ac{background:var(--b-bg)}
+.ac .aph{display:block;width:100%;height:auto;flex:none;-webkit-mask-image:linear-gradient(#000 76%,transparent);mask-image:linear-gradient(#000 76%,transparent)}
+.ac .in{flex:1;display:flex;flex-direction:column;padding:6px 26px 28px;min-height:0}
+.ac .att{display:flex;align-items:center;gap:14px}
+.ac .att img{width:52px;height:52px;border-radius:12px;flex:none}
+.ac h2{font:700 26px/1.15 var(--b-font);margin:0;color:var(--b-ink)}
+.ac p{font:400 15px/1.42 var(--b-font);color:var(--b-ink);margin:16px 0 0}
+.sso{display:flex;flex-direction:column;gap:12px;margin-top:auto}
+.sso button{height:44px;border-radius:var(--b-btn);border:0;font:500 16px var(--b-font);display:flex;align-items:center;justify-content:center;gap:9px;cursor:pointer}
+.sso .ic{width:18px;height:18px}
+.b-ap{background:var(--b-apple);color:var(--b-primary-ink)}
+.sso .b-go{background:var(--b-google);color:var(--b-ink);border:1px solid var(--b-line)}
+.b-fb{background:var(--b-fb);color:var(--b-primary-ink)}
+.b-em{background:var(--b-mail);color:var(--b-primary-ink)}
+.ac .alg{font:400 12px/1.45 var(--b-font);color:var(--b-ink);margin-top:12px}
+.ac .alg a{color:var(--b-primary);text-decoration:none}
+/* SCREENS:END */
+</style>
+</head>
+<body>
+
+<nav class="au-nav" aria-label="Sections">
+  <div class="au-nav-in">
+    <div class="au-brand">
+      <img src="assets/brand/appstore-icon.jpg" alt="">
+      <span>Growth Audit <small>· Fishing Points</small></span>
+    </div>
+    <a class="au-opt" href="#why">Why this</a>
+    <a href="#ideas">Five ideas</a>
+    <a href="#prototype">Prototype</a>
+    <a class="au-opt" href="#compare" id="navCompare" hidden>Paywall</a>
+  </div>
+</nav>
+
+<header class="au-top-hero" id="top">
+  <div class="au-wrap">
+    <p class="au-eyebrow"><i></i>Growth Audit · September 2026</p>
+    <h1 class="au-display">Fishing Points</h1>
+    <p class="au-lede">Five ideas to turn more anglers into subscribers. <span>Each one built into your own onboarding, so you can tap through it.</span></p>
+    <p class="au-byline">Prepared by Adapty for the Fishing Points team</p>
+    <div class="au-ctas">
+      <a class="au-btn" href="#ideas">See the five ideas</a>
+      <a class="au-lnk" href="#prototype">Open the prototype</a>
+      <button type="button" class="au-lnk au-play" id="heroVideo" hidden>Watch the 30-second walkthrough</button>
+    </div>
+  </div>
+  <!-- filled from CONTENT.hero: three screen ids → assets/hero/<id>.png (make them with hero-stills.sh) -->
+  <div class="au-phones" id="heroPhones" aria-label="Three screens from the prototype"></div>
+</header>
+
+<section class="au-sec au-white" id="why">
+  <div class="au-wrap">
+    <div class="au-split">
+      <div>
+        <p class="au-kicker">Why you’re seeing this</p>
+        <h2 class="au-h2">30,000 subscription apps taught us what moves conversion. <span>Here’s what we’d test first at Fishing Points.</span></h2>
+      </div>
+      <div>
+        <p>Adapty runs subscriptions for <b>more than 30,000 apps</b>, so we see which onboarding and paywall changes lift revenue across the whole market, not just inside one app.</p>
+        <p>We pointed that at Fishing Points. We took <b>your own screens, copy and prices</b> from your recorded iOS onboarding, your App Store listing and fishingpoints.app, and rebuilt the path from install to paywall around the five ideas with the most potential.</p>
+      </div>
+    </div>
+    <div class="au-stats">
+      <div class="au-stat"><b>30,000+</b><span>apps run their subscriptions on Adapty</span></div>
+      <div class="au-stat"><b>5</b><span>ideas, each built as a working screen</span></div>
+      <div class="au-stat"><b>0</b><span>changes to your art direction</span></div>
+    </div>
+    <div class="au-notes">
+      <div class="au-note">
+        <div class="au-ic"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"/></svg></div>
+        <h3>Five ideas, not fifteen</h3>
+        <p>We’re not proposing to rebuild every screen. These are the changes with the highest potential, ranked by what we’d test first.</p>
+      </div>
+      <div class="au-note">
+        <div class="au-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17M3.5 12h17"/></svg></div>
+        <h3>Your design, not ours</h3>
+        <p>Every colour, control and price in the prototype is Fishing Points’s. We changed the order and what gets shown.</p>
+      </div>
+      <div class="au-note">
+        <div class="au-ic"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v6.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5v-13A1.5 1.5 0 0 1 5.5 4H15"/></svg></div>
+        <h3>We hope you haven’t tried these yet</h3>
+        <p>We work from the outside, so we can’t see your current 4.2.5 flow or your test history. If you’ve already run one of these, tell us and we’ll go deeper on the rest.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="au-sec" id="ideas">
+  <div class="au-wrap">
+    <div class="au-ideas-h">
+      <p class="au-kicker">The shortlist</p>
+      <h2 class="au-h2">Five ideas. <span>Ranked by what we’d test first.</span></h2>
+    </div>
+    <div class="au-list" id="ideaList"></div>
+    <div class="au-band">
+      <div>
+        <p class="au-k">Potential outcome, based on Adapty data</p>
+        <h3>Together they work on three moments: what you ask before the paywall, what the paywall shows, and what happens when someone taps Back.</h3>
+        <p class="au-fn" id="bandFn"></p>
+        <a class="au-btn" href="#prototype">Tap through the prototype</a>
+      </div>
+      <div class="au-nums" id="bandNums"></div>
+    </div>
+  </div>
+</section>
+
+<section class="au-sec au-white" id="prototype">
+  <div class="au-wrap">
+    <div class="au-proto-h">
+      <p class="au-kicker">The prototype</p>
+      <h2 class="au-h2">Every idea, inside your own onboarding.</h2>
+      <p>Tap through it like a new user, or jump straight to an idea. Yellow numbers mark the screens that carry one.</p>
+    </div>
+    <div class="au-langrow" id="langRow" hidden><span>Prototype language</span><div class="au-lsw" id="langSw" role="group" aria-label="Prototype language"></div></div>
+    <div class="au-seg" id="chips" role="tablist" aria-label="Screens"></div>
+    <div class="au-stage">
+      <div class="phone"><div class="phone-in">
+        <div class="island"></div>
+        <div class="sbar"><span>9:41</span><span>●●● ▮</span></div>
+
+<!-- SCREENS:START — one section.scr[data-id=ID] per screen, in flow order. Only the screens an idea lands on,
+     plus the context needed to read the flow (~8–10). Wiring: data-go="<id>" · data-back · data-pick="key:value"
+     (+ data-advance="<id>") · data-toggle="key:value" · data-bind="key" / "label:key" / "count:key" ·
+     data-requires="key" · data-show="key:value" · data-input="key" · class="scr sheet" slides up (offer paywall).
+     RULE: images only from assets/ (their app, their site, App Store) — never stock, never hotlinked.
+     Extras: data-t="key" = translatable (markup is CONTENT.langs[0]; other languages in CONTENT.i18n) — keep data-t on
+     leaf-ish elements, never on an element that also carries data-bind/data-pick/data-show;
+     data-langtoggle cycles the language (their own language pill); data-aside keeps a screen out of the flow
+     (the paywall TODAY, rendered only for the side-by-side still). -->
+
+<section class="scr wel" data-id="welcome">
+  <img class="hero-ph" src="assets/crop/welcome-hero.png" alt="">
+  <div class="in">
+    <h1 data-t="wl_h">Welcome to<br>Fishing Points!</h1>
+    <p class="wsub" data-t="wl_s">Your new ultimate tool to fish better -<br>everywhere and anytime</p>
+    <p class="legal2" data-t="wl_legal">By using this application, you agree to our <a>Terms of Use</a> &amp;&nbsp;<a>Privacy Policy</a></p>
+    <button class="ybtn" data-go="type"><span data-t="continue">Continue</span></button>
+  </div>
+</section>
+
+<section class="scr q" data-id="type">
+  <div class="qtop"><button class="bk" data-back aria-label="Back"><i class="ic" data-icon="back"></i></button><div class="track"><i style="width:20%"></i></div></div>
+  <div class="qb">
+    <h1 class="qh" data-t="ty_h">What type of fisherman<br>are you?</h1>
+    <div class="opts">
+      <button class="opt" data-pick="type:salt" data-advance="forecasts"><span data-t="ty_salt">Saltwater</span></button>
+      <button class="opt" data-pick="type:fresh" data-advance="forecasts"><span data-t="ty_fresh">Freshwater</span></button>
+      <button class="opt" data-pick="type:both" data-advance="forecasts"><span data-t="ty_both">Both</span></button>
+      <button class="opt" data-pick="type:not" data-advance="forecasts"><span data-t="ty_not">Not a fisherman</span></button>
+    </div>
+  </div>
+</section>
+
+<section class="scr q" data-id="forecasts">
+  <div class="qtop"><button class="bk" data-back aria-label="Back"><i class="ic" data-icon="back"></i></button><div class="track"><i style="width:55%"></i></div></div>
+  <div class="qb">
+    <h1 class="qh" data-t="fc_h">Which forecasts interest<br>you most?</h1>
+    <p class="qs" data-t="multi">You can select multiple answers</p>
+    <div class="opts m">
+      <button class="mo" data-toggle="fc:radar"><i class="ic" data-icon="radar"></i><span class="ml" data-t="fc_radar">Rain radar</span><i class="cb" data-icon="check"></i></button>
+      <button class="mo" data-toggle="fc:waves"><i class="ic" data-icon="waves"></i><span class="ml" data-t="fc_waves">Waves</span><i class="cb" data-icon="check"></i></button>
+      <button class="mo" data-toggle="fc:river"><i class="ic" data-icon="river"></i><span class="ml" data-t="fc_river">River Data</span><i class="cb" data-icon="check"></i></button>
+      <button class="mo" data-toggle="fc:weather"><i class="ic" data-icon="weather"></i><span class="ml" data-t="fc_weather">Weather</span><i class="cb" data-icon="check"></i></button>
+      <button class="mo" data-toggle="fc:fishact"><i class="ic" data-icon="fishact"></i><span class="ml" data-t="fc_fishact">Fish activity</span><i class="cb" data-icon="check"></i></button>
+      <button class="mo" data-toggle="fc:tides"><i class="ic" data-icon="tides"></i><span class="ml" data-t="fc_tides">Tides</span><i class="cb" data-icon="check"></i></button>
+      <button class="mo" data-toggle="fc:sun"><i class="ic" data-icon="sun"></i><span class="ml" data-t="fc_sun">Sun and moon</span><i class="cb" data-icon="check"></i></button>
+      <button class="mo" data-toggle="fc:none"><i class="ic" data-icon="none"></i><span class="ml" data-t="fc_none">None</span><i class="cb" data-icon="check"></i></button>
+    </div>
+    <button class="qcta" data-requires="fc" data-go="features"><span data-t="continue">Continue</span></button>
+  </div>
+</section>
+
+<section class="scr q" data-id="features">
+  <div class="qtop"><button class="bk" data-back aria-label="Back"><i class="ic" data-icon="back"></i></button><div class="track"><i style="width:85%"></i></div></div>
+  <div class="qb">
+    <h1 class="qh" data-t="ft_h">Which map features you plan<br>to use?</h1>
+    <p class="qs" data-t="multi">You can select multiple answers</p>
+    <div class="opts m">
+      <button class="mo" data-toggle="ft:locations"><i class="ic" data-icon="locations"></i><span class="ml" data-t="ft_locations">Saving PRIVATE locations</span><i class="cb" data-icon="check"></i></button>
+      <button class="mo" data-toggle="ft:paths"><i class="ic" data-icon="paths"></i><span class="ml" data-t="ft_paths">Recording paths</span><i class="cb" data-icon="check"></i></button>
+      <button class="mo" data-toggle="ft:catches"><i class="ic" data-icon="catches"></i><span class="ml" data-t="ft_catches">Logging catches</span><i class="cb" data-icon="check"></i></button>
+      <button class="mo" data-toggle="ft:nautical"><i class="ic" data-icon="nautical"></i><span class="ml" data-t="ft_nautical">Nautical charts</span><i class="cb" data-icon="check"></i></button>
+      <button class="mo" data-toggle="ft:measure"><i class="ic" data-icon="measure"></i><span class="ml" data-t="ft_measure">Measuring distances</span><i class="cb" data-icon="check"></i></button>
+      <button class="mo" data-toggle="ft:regs"><i class="ic" data-icon="regs"></i><span class="ml" data-t="ft_regs">Fishing Regulations</span><i class="cb" data-icon="check"></i></button>
+      <button class="mo" data-toggle="ft:none"><i class="ic" data-icon="none"></i><span class="ml" data-t="ft_none">None</span><i class="cb" data-icon="check"></i></button>
+    </div>
+    <button class="qcta" data-requires="ft" data-go="loader"><span data-t="continue">Continue</span></button>
+  </div>
+</section>
+
+<section class="scr ld" data-id="loader">
+  <div class="ldc">
+    <svg viewBox="0 0 132 132"><circle cx="66" cy="66" r="56" fill="none" style="stroke:var(--b-track)" stroke-width="12"/><circle id="ldRing" cx="66" cy="66" r="56" fill="none" style="stroke:var(--b-primary)" stroke-width="12" stroke-linecap="round" stroke-dasharray="351.9" stroke-dashoffset="351.9"/></svg>
+    <div class="pct" id="ldPct">0%</div>
+  </div>
+  <p class="lt" data-t="ld_t">Preparing fishing maps...</p>
+  <ul class="echo" id="ldEcho">
+    <li><i class="tk" data-icon="check"></i><span id="ldE1"></span></li>
+    <li><i class="tk" data-icon="check"></i><span id="ldE2"></span></li>
+    <li><i class="tk" data-icon="check"></i><span id="ldE3"></span></li>
+  </ul>
+  <div class="lproof" id="ldProof"><b></b><span></span></div>
+</section>
+
+<section class="scr po" data-id="payoff">
+  <div class="ptop"><img id="poImg" src="assets/site/Fishing_Points_Nautical3_97b0a0b56e.webp" alt=""></div>
+  <div class="in">
+    <h1 id="poH">Your saltwater toolkit</h1>
+    <p class="meta" id="poMeta"></p>
+    <p class="lab" data-t="po_lab">You picked</p>
+    <div class="pl" id="poList"></div>
+    <button class="qcta" data-go="preview"><span data-t="continue">Continue</span></button>
+  </div>
+</section>
+
+<section class="scr fa" data-id="preview">
+  <div class="fhd">
+    <div><h1 class="ftt" data-t="fa_t">Fish activity</h1><div class="floc"><i class="ic" data-icon="pin" style="width:13px;height:13px"></i>Tampa<small data-t="fa_ex">example spot</small></div></div>
+    <div class="gb"><span><i class="ic" data-icon="bellf" style="width:19px;height:19px"></i></span><span><i class="ic" data-icon="pinf" style="width:19px;height:19px"></i></span></div>
+  </div>
+  <div class="fdays" id="pvDays"></div>
+  <div class="fg"><svg viewBox="0 0 150 150"><circle cx="75" cy="75" r="66" fill="none" stroke="rgba(255,255,255,.95)" stroke-width="13" stroke-dasharray="1.6 5.31"/></svg><b>98<small>★★★</small></b></div>
+  <p class="fst" data-t="fa_st">Very high fish activity</p>
+  <svg class="fch" viewBox="0 0 370 92" preserveAspectRatio="none"><path d="M0 30 C 25 28 40 50 62 52 S 95 30 110 36 S 130 10 145 12 S 160 60 172 62 S 205 20 225 22 S 250 48 268 50 S 300 8 318 10 S 335 64 346 60 S 362 40 370 30 L370 92 L0 92 Z" fill="rgba(255,255,255,.16)"/><path d="M0 30 C 25 28 40 50 62 52 S 95 30 110 36 S 130 10 145 12 S 160 60 172 62 S 205 20 225 22 S 250 48 268 50 S 300 8 318 10 S 335 64 346 60 S 362 40 370 30" fill="none" stroke="rgba(255,255,255,1)" stroke-width="3"/><circle cx="172" cy="62" r="6" style="fill:var(--b-mail)" stroke="rgba(255,255,255,1)" stroke-width="2"/></svg>
+  <div class="fchb"></div>
+  <div class="fsheet">
+    <div class="fk"><i data-icon="lock"></i><span data-t="pv_h">Today is free.</span></div>
+    <p data-t="pv_s">Tomorrow, the weekend and the next 3 months come with Premium.</p>
+    <div class="fcmp"><div class="h"><span data-t="pv_c1">Your picks</span><span data-t="pv_c2">Free</span><span>Premium</span></div><div id="pvRows"></div></div>
+    <button class="qcta" data-go="paywall"><span data-t="pv_cta">See Premium</span></button>
+  </div>
+</section>
+
+<section class="scr pw" data-id="paywall">
+  <div class="pnav"><button class="pwb" data-go="offer"><span data-t="pw_back">Back</span></button><span data-t="pw_restore">Restore</span></div>
+  <h1><span data-t="pw_h">Unlock Fishing Points</span><br><em>Premium</em></h1>
+  <p class="tri" data-show="trial:on"><span data-t="pw_tri">7-Day Free Trial</span></p>
+  <img class="art" src="assets/crop/pw-fish.png" alt="">
+  <div class="cm"><b data-t="pw_cm">Catch More Fish</b><span id="pwSub">Know exactly when fish are most active.</span></div>
+  <div class="pproof"><b><span class="stars">★★★★★</span><span data-t="pw_rate">4.7 · 230K+ ratings</span></b><small data-t="pw_dl">12+ million downloads on iOS and Android</small></div>
+  <div class="sheetp">
+    <button class="trow" data-trial><span data-show="trial:on"><span data-t="pw_ton">Free Trial Enabled</span></span><span data-show="trial:off"><span data-t="pw_toff">Not sure? Enable Free Trial.</span></span><i class="sw" id="pwSw"></i></button>
+    <button class="pc" data-pick="plan:year"><span class="band" data-t="pw_off">58% OFF</span><span class="bd"><span><span class="nm" data-t="pw_yr">Yearly</span><span class="tm" data-show="trial:on"><span data-t="pw_yr_t">7 days free, then $49.99/year</span></span><span class="tm" data-show="trial:off"><span data-t="pw_yr_n">$49.99/year</span></span></span><span class="pm" data-t="pw_yr_pm">$4.17/month</span></span></button>
+    <button class="pc" data-pick="plan:month"><span class="bd"><span><span class="nm" data-t="pw_mo">Monthly</span><span class="tm" data-show="trial:on"><span data-t="pw_mo_t">7 days free, then $9.99/month</span></span><span class="tm" data-show="trial:off"><span data-t="pw_mo_n">$9.99/month</span></span></span><span class="pm" data-t="pw_mo_pm">$9.99/month</span></span></button>
+    <button class="pill" data-pick="paid:yes" data-advance="account"><span data-show="trial:on"><span data-t="pw_cta_t">Try free and subscribe</span></span><span data-show="trial:off"><span data-t="pw_cta_n">Subscribe</span></span></button>
+    <p class="trust"><span data-show="trial:on"><span data-t="pw_trust_t">No payment now · </span></span><span data-t="pw_trust">Cancel anytime in Settings</span></p>
+    <div class="terms"><span data-t="terms">Terms of Use</span><span data-t="privacy">Privacy Policy</span></div>
+  </div>
+</section>
+
+<section class="scr sheet of" data-id="offer">
+  <div class="ohd">
+    <button class="xb" data-pick="paid:no" data-advance="account" aria-label="Close">✕</button>
+    <h2 data-t="of_h">Not ready for a<br>full year?</h2>
+    <img src="assets/crop/pw-waves.png" alt="">
+  </div>
+  <div class="in">
+    <h3 data-t="of_t">Try Premium free for 7 days</h3>
+    <p class="pr" data-t="of_p">Then $9.99/month. No commitment.</p>
+    <ul class="tl">
+      <li><i class="dt" data-icon="check"></i><b data-t="of_d0">Today</b><span class="tx" id="ofToday"></span></li>
+      <li><i class="dt" data-icon="bell"></i><b data-t="of_d7">Day 7</b><span class="tx" data-t="of_d7s">Monthly plan starts at $9.99/month</span></li>
+      <li><i class="dt" data-icon="x"></i><b data-t="of_da">Anytime</b><span class="tx" data-t="pw_trust">Cancel anytime in Settings</span></li>
+    </ul>
+    <div class="rv"><span class="stars">★★★★★</span><span data-t="of_rv">“An excellent tool! I’ve been using it since 2018 and have the Premium version. No regrets at all, it’s worth every penny.”</span><small data-t="of_rvc">Germany</small></div>
+    <div class="pc on opc"><span class="bd"><span><span class="nm" data-t="pw_mo">Monthly</span><span class="tm" data-t="pw_mo_t">7 days free, then $9.99/month</span></span><span class="pm" data-t="pw_mo_pm">$9.99/month</span></span></div>
+    <button class="pill" data-pick="paid:yes" data-advance="account"><span data-t="of_cta">Start my free week</span></button>
+    <button class="lnk" data-pick="paid:no" data-advance="account"><span data-t="of_free">Continue with the free version</span></button>
+  </div>
+</section>
+
+<section class="scr ac" data-id="account">
+  <img class="aph" src="assets/crop/signin-hero.png" alt="">
+  <div class="in">
+    <div class="att"><img src="assets/brand/logo.png" alt=""><h2 data-t="ac_h">Sign in to<br>Fishing Points</h2></div>
+    <p data-t="ac_p">Log in or create Fishing Points account to never lose your saved fishing spots and catches.</p>
+    <div class="sso">
+      <button class="b-ap" data-go="home"><i class="ic" data-icon="apple"></i><span data-t="ac_ap">Sign in with Apple</span></button>
+      <button class="b-go" data-go="home"><i class="ic" data-icon="google"></i><span data-t="ac_go">Sign in with Google</span></button>
+      <button class="b-fb" data-go="home"><i class="ic" data-icon="facebook"></i><span data-t="ac_fb">Sign in with Facebook</span></button>
+      <button class="b-em" data-go="home"><i class="ic" data-icon="mail"></i><span data-t="ac_em">Sign in with email</span></button>
+    </div>
+    <button class="lnk" data-go="home"><span data-t="ac_nn">Not now</span></button>
+    <p class="alg" data-t="ac_lg">By continuing, you are indicating that you accept our <a>Terms of Service</a> and <a>Privacy Policy</a>.</p>
+  </div>
+</section>
+
+<section class="scr fa" data-id="home">
+  <div class="fhd">
+    <div><h1 class="ftt" data-t="fa_t">Fish activity</h1><div class="floc"><i class="ic" data-icon="pin" style="width:13px;height:13px"></i>Tampa</div></div>
+    <div class="gb"><span><i class="ic" data-icon="bellf" style="width:19px;height:19px"></i></span><span><i class="ic" data-icon="pinf" style="width:19px;height:19px"></i></span></div>
+  </div>
+  <div class="fdays" id="hmDays"></div>
+  <div class="fg"><svg viewBox="0 0 150 150"><circle cx="75" cy="75" r="66" fill="none" stroke="rgba(255,255,255,.95)" stroke-width="13" stroke-dasharray="1.6 5.31"/></svg><b>98<small>★★★</small></b></div>
+  <p class="fst" data-t="fa_st">Very high fish activity</p>
+  <svg class="fch" viewBox="0 0 370 92" preserveAspectRatio="none"><path d="M0 30 C 25 28 40 50 62 52 S 95 30 110 36 S 130 10 145 12 S 160 60 172 62 S 205 20 225 22 S 250 48 268 50 S 300 8 318 10 S 335 64 346 60 S 362 40 370 30 L370 92 L0 92 Z" fill="rgba(255,255,255,.16)"/><path d="M0 30 C 25 28 40 50 62 52 S 95 30 110 36 S 130 10 145 12 S 160 60 172 62 S 205 20 225 22 S 250 48 268 50 S 300 8 318 10 S 335 64 346 60 S 362 40 370 30" fill="none" stroke="rgba(255,255,255,1)" stroke-width="3"/><circle cx="172" cy="62" r="6" style="fill:var(--b-mail)" stroke="rgba(255,255,255,1)" stroke-width="2"/></svg>
+  <div class="ftimes"><div><small data-t="fa_major">Major times</small><b>6:33 AM – 9:03 AM</b><b>7:01 PM – 9:31 PM</b></div><div><small data-t="fa_minor">Minor times</small><b>12:30 AM – 2:00 AM</b><b>1:37 PM – 3:07 PM</b></div></div>
+  <div class="toast"><b data-t="hm_b">You’re all set.</b><span data-show="paid:yes"><span data-t="hm_s">Your purchase was successful.</span></span><button data-go="welcome">OK</button></div>
+</section>
+
+<section class="scr pw" data-id="today" data-aside>
+  <div class="pnav"><span>Back</span><span>Restore</span></div>
+  <h1>Unlock<br>Fishing Points<br><em>Premium</em></h1>
+  <img class="art" src="assets/crop/pw-fish.png" alt="">
+  <div class="cm"><b>Catch More Fish</b><span>Know exactly when fish are most active.</span></div>
+  <img class="waves" src="assets/crop/pw-waves.png" alt="">
+  <p class="perf">Find the Perfect Conditions</p>
+  <div class="sheetp">
+    <div class="trow"><span>Not sure? Enable Free Trial.</span><i class="sw"></i></div>
+    <div class="pc on"><span class="band">58% OFF</span><span class="bd"><span><span class="nm">Yearly</span><span class="tm">$49.99/year</span></span><span class="pm">$4.17/month</span></span></div>
+    <div class="pc"><span class="bd"><span><span class="nm">Monthly</span><span class="tm">$9.99/month</span></span><span class="pm">$9.99/month</span></span></div>
+    <div class="pill" style="display:flex;align-items:center;justify-content:center">Subscribe</div>
+  </div>
+</section>
+<!-- SCREENS:END -->
+
+      </div></div>
+      <div class="au-pn" id="panel" aria-live="polite"></div>
+    </div>
+    <p class="au-hint">Tap Back on the paywall to see idea 5.</p>
+    <!-- shown when CONTENT.liveUrl is set: assets/qr-app.png = qr.swift "<liveUrl>?app" -->
+    <div class="au-qr" id="qrCard" hidden><img src="assets/qr-app.png" alt="QR code that opens the prototype full screen"><div><b>Try it on your phone</b><p>Scan to open the prototype full screen, the way a new user would see it.</p></div></div>
+    <div class="au-mobw" id="qrMob" hidden><a class="au-btn" href="?app">Open it full screen</a></div>
+  </div>
+</section>
+
+<!-- the paywall TODAY vs PROPOSED — built from CONTENT.compare (stills: assets/hero/<today>.png, <proposed>.png) -->
+<section class="au-sec" id="compare" hidden><div class="au-wrap" id="cmpBody"></div></section>
+
+<footer class="au-foot" id="sources">
+  <div class="au-wrap">
+    <details id="srcDetails">
+      <summary>Where the numbers come from</summary>
+      <div class="au-srcs" id="srcBody"></div>
+    </details>
+    <p class="au-fine" id="fine"></p>
+    <div class="au-cta-line">
+      <p>Every screen here can be built and A/B tested in Adapty’s Flow Builder, with no app release.</p>
+      <a class="au-btn" href="https://adapty.io/flow-paywall-builder/" target="_blank" rel="noopener">About Flow Builder</a>
+    </div>
+  </div>
+</footer>
+
+<!-- extras: video dialog (CONTENT.video), ?app bar, ?tour overlay (CONTENT.tour) -->
+<dialog class="au-vid" id="vid" aria-label="Walkthrough video">
+  <div class="au-vid-in"><video id="vidEl" controls muted playsinline preload="none"></video></div>
+  <div class="au-vid-bar"><a id="vidDl" download>Download the MP4</a><button type="button" class="au-vid-x" id="vidX">Close</button></div>
+</dialog>
+<div class="au-scrim" id="abScrim"></div>
+<div class="au-appbar" id="appbar">
+  <button type="button" class="au-ab-why" id="abWhy"><i></i><span id="abT"></span><em>Why ↑</em></button>
+  <div class="au-lsw" id="abLang" role="group" aria-label="Language"></div>
+</div>
+<div class="au-tour" aria-hidden="true">
+  <div class="au-tb"><img src="assets/brand/appstore-icon.jpg" alt="">Growth Audit <small>· Fishing Points</small></div>
+  <div class="au-tby">Prepared by Adapty</div>
+  <div class="au-tcap" id="tCap"></div>
+  <div class="au-ttap" id="tTap"></div>
+  <div class="au-tprog"><i id="tProg"></i></div>
+  <div class="au-tintro" id="tIntro"></div>
+  <div class="au-tend" id="tEnd"></div>
+</div>
+
+<!-- CONTENT — all the audit's words and numbers, as data. Schema (brand-check enforces it):
+     ideas  : 3–5 rows, ranked (the audit is five ideas, never fifteen). screen = the screen that shows it.
+     panel  : one entry per screen. idea = its number in ideas (1-based) or 0 for a context screen.
+              why on an idea screen reads "<b>Try</b> X, <b>because</b> Y." in ≤ 45 words; iv = its range.
+              why on a context screen is one line saying what it sets up.
+     hero   : three screen ids shown as stills in the hero — run hero-stills.sh after the screens are done.
+     outcome: combined "up to" numbers, PS-deck style, never above the ceiling of the per-idea ranges.
+     sources: public facts only — App Store, their site, their screens. No sales research on this page.
+     EXTRAS (each one hides itself when left empty):
+     langs  : [{"code":"en","name":"English"},{"code":"es","name":"Español · Spain prices"}] — first = the markup's language
+     i18n   : {"es": {"<data-t key>": "text with {tokens}"}} — every data-t key, for every language after the first
+     prices : {"es": {"yr": "39,99 €", …}} — {tokens} in i18n strings; that storefront's real IAP prices
+     labelsI18n: {"es": {"goal": {"a": "…"}}} — C.labels per language (data-bind="label:…")
+     liveUrl: final Pages URL (QR card + video end card); the QR file encodes liveUrl + "?app"
+     video / poster: "assets/walkthrough.mp4" / "assets/walkthrough-poster.jpg" (record-video.sh)
+     compare: {today, proposed, kicker, title, sub, todayCap, rows:[{h, idea, was, now}], kept} — today = a data-aside screen
+     tour   : {segments:[{id, d, st, tap:[selector-in-screen, ms], pop, reveal, end}], captions:{id:{n|k, t, l, o, ol}},
+              introLede, endTitle} — ~30 s total; the last segment has end:true (the end card) -->
+<script type="application/json" id="content">
+{
+ "app": "Fishing Points",
+ "state": {
+  "type": "salt",
+  "fc": [
+   "fishact",
+   "tides",
+   "waves"
+  ],
+  "ft": [
+   "nautical",
+   "catches"
+  ],
+  "trial": "on",
+  "plan": "year",
+  "paid": "yes",
+  "ld": 100
+ },
+ "labels": {
+  "type": {
+   "salt": "Saltwater",
+   "fresh": "Freshwater",
+   "both": "Both",
+   "not": "Not a fisherman"
+  },
+  "fc": {
+   "radar": "Rain radar",
+   "waves": "Waves",
+   "river": "River Data",
+   "weather": "Weather",
+   "fishact": "Fish activity",
+   "tides": "Tides",
+   "sun": "Sun and moon",
+   "none": "None"
+  },
+  "ft": {
+   "locations": "Saving PRIVATE locations",
+   "paths": "Recording paths",
+   "catches": "Logging catches",
+   "nautical": "Nautical charts",
+   "measure": "Measuring distances",
+   "regs": "Fishing Regulations",
+   "none": "None"
+  }
+ },
+ "chips": {
+  "welcome": "Welcome",
+  "type": "Angler",
+  "forecasts": "Forecasts",
+  "features": "Map",
+  "loader": "Loader",
+  "payoff": "Toolkit",
+  "preview": "Today free",
+  "paywall": "Paywall",
+  "offer": "On Back",
+  "account": "Sign in",
+  "home": "Done"
+ },
+ "hero": [
+  "payoff",
+  "paywall",
+  "preview"
+ ],
+ "outcome": {
+  "cr": "+20%",
+  "arpu": "+15%"
+ },
+ "ideas": [
+  {
+   "screen": "payoff",
+   "title": "Use the answers you already collect",
+   "what": "Your quiz asks what kind of angler they are, where they fish, which forecasts and map features they want and how often they go. Then “Preparing fishing maps...” hands everyone the same paywall. Name their picks on a “Your saltwater toolkit” screen, and again on the paywall.",
+   "impact": "+10–20%",
+   "il": "CR to purchase"
+  },
+  {
+   "screen": "account",
+   "title": "Ask for the account after the purchase",
+   "what": "Sign-in is step 3 today: Apple, Google, Facebook or email, then email, password and name, four screens before the first question. Move the same sheet to after the paywall, where “never lose your saved fishing spots and catches” is true.",
+   "impact": "+5–10%",
+   "il": "CR to purchase · ARPU up to +17%"
+  },
+  {
+   "screen": "paywall",
+   "title": "Start with the free week switched on",
+   "what": "Your 7-day trial sits behind “Not sure? Enable Free Trial.”, switched off, so the first price people see is $49.99 due today. Switch it on by default, put 4.7 stars from 230K+ ratings above the plans, and say “No payment now” under the button.",
+   "impact": "+10–20%",
+   "il": "CR to trial or purchase"
+  },
+  {
+   "screen": "preview",
+   "title": "Show what Free leaves out, in your own forecast",
+   "what": "Free shows fish activity, tides and weather for today only; Premium plans up to 3 months ahead. Show today’s score before the paywall with the rest of the week locked, and the limits for the forecasts they just ticked.",
+   "impact": "+5–15%",
+   "il": "CR to purchase"
+  },
+  {
+   "screen": "offer",
+   "title": "Catch the people who tap Back",
+   "what": "Back on the paywall goes straight to the map. Show one sheet instead: your $9.99 Monthly plan with its 7 free days as a timeline, for people who don’t want a year yet. A price you already sell, no invented discount, no countdown.",
+   "impact": "+5–10%",
+   "il": "CR from people who close the paywall"
+  }
+ ],
+ "panel": {
+  "welcome": {
+   "idea": 0,
+   "t": "Your welcome, unchanged",
+   "why": "Kept word for word. Continue now opens your quiz instead of the sign-in sheet (idea 2)."
+  },
+  "type": {
+   "idea": 0,
+   "t": "Your quiz, now screen 2",
+   "why": "Your own first question, moved up from screen 7. The answer names the toolkit and the paywall (idea 1)."
+  },
+  "forecasts": {
+   "idea": 0,
+   "t": "Which forecasts interest you most?",
+   "why": "Kept word for word. What’s ticked here comes back on the toolkit, the preview and the paywall."
+  },
+  "features": {
+   "idea": 0,
+   "t": "Map features, unchanged",
+   "why": "Kept word for word. Nautical charts and saved locations are Premium limits the preview can name."
+  },
+  "loader": {
+   "idea": 0,
+   "t": "Your loader, reading the answers back",
+   "why": "Same ring, same “Preparing fishing maps...”, same proof it cycles today, plus the answers it is preparing for."
+  },
+  "payoff": {
+   "idea": 1,
+   "t": "Use the answers you already collect",
+   "why": "<b>Try</b> a screen that names what they picked and what each pick does, <b>because</b> today six answers go into “Preparing fishing maps...” and come out as the same paywall for everyone.",
+   "iv": "CR +10–20%",
+   "il": "to purchase",
+   "also": "The paywall picks it up too: the line under “Catch More Fish” names their trips."
+  },
+  "preview": {
+   "idea": 4,
+   "t": "Show what Free leaves out",
+   "why": "<b>Try</b> showing today’s Fish activity free and the rest of the week locked, <b>because</b> Free really is today-only, and a forecast they can see beats a feature list they have to imagine.",
+   "iv": "CR +5–15%",
+   "il": "to purchase",
+   "also": "The three rows come from the forecasts and map features they ticked (idea 1). Tampa and the 98 are from your own render."
+  },
+  "paywall": {
+   "idea": 3,
+   "t": "Start with the free week switched on",
+   "why": "<b>Try</b> your trial switch on by default, with 4.7 stars from 230K+ ratings above the plans, <b>because</b> today the first price people see is $49.99 due now, and in utilities a free trial tends to raise lifetime value.",
+   "iv": "CR +10–20%",
+   "il": "to trial or purchase",
+   "also": "Idea 1 is here too: the line under “Catch More Fish” names their trips."
+  },
+  "offer": {
+   "idea": 5,
+   "t": "Catch the people who tap Back",
+   "why": "<b>Try</b> one sheet with your $9.99 Monthly plan and its 7 free days laid out, <b>because</b> Back now drops people straight onto the map, and a year is the commitment they just said no to.",
+   "iv": "CR +5–10%",
+   "il": "from people who close the paywall",
+   "also": "No countdown, no discount: Monthly is a price you already sell."
+  },
+  "account": {
+   "idea": 2,
+   "t": "Ask for the account after the purchase",
+   "why": "<b>Try</b> your sign-in sheet after the paywall, <b>because</b> today it is step 3, followed by email, password and name, and its own line, “never lose your saved spots”, only rings true once there is something to save.",
+   "iv": "CR +5–10%",
+   "il": "to purchase · ARPU up to +17%",
+   "also": "“Not now” lets free users in. Drop it if an account is required before purchase."
+  },
+  "home": {
+   "idea": 0,
+   "t": "Into the app",
+   "why": "Lands on Fish activity with the whole week open, and your own “You’re all set.”"
+  },
+  "today": {
+   "idea": 0,
+   "t": "Your paywall today",
+   "why": "Rebuilt from your recording, word for word. It sits outside the flow, for the side-by-side below."
+  }
+ },
+ "langs": [
+  {
+   "code": "en",
+   "name": "English · US prices"
+  },
+  {
+   "code": "pt",
+   "name": "Português · preços do Brasil"
+  }
+ ],
+ "i18n": {
+  "pt": {
+   "wl_h": "Bem-vindo ao<br>Fishing Points!",
+   "wl_s": "Sua nova ferramenta definitiva para pescar melhor, em qualquer lugar e a qualquer hora",
+   "wl_legal": "Ao usar este aplicativo, você concorda com nossos <a>Termos de utilização</a> e a <a>Política de privacidade</a>",
+   "continue": "Continuar",
+   "ty_h": "Que tipo de pescador<br>você é?",
+   "ty_salt": "Água salgada",
+   "ty_fresh": "Água doce",
+   "ty_both": "Ambos",
+   "ty_not": "Não sou pescador",
+   "fc_h": "Quais previsões mais<br>te interessam?",
+   "multi": "Você pode escolher mais de uma resposta",
+   "fc_radar": "Radar de chuva",
+   "fc_waves": "Ondas",
+   "fc_river": "Dados dos rios",
+   "fc_weather": "Clima",
+   "fc_fishact": "Atividade dos peixes",
+   "fc_tides": "Marés",
+   "fc_sun": "Sol e Lua",
+   "fc_none": "Nenhuma",
+   "ft_h": "Quais recursos do mapa<br>você pretende usar?",
+   "ft_locations": "Salvar locais PRIVADOS",
+   "ft_paths": "Gravar trajetos",
+   "ft_catches": "Registrar capturas",
+   "ft_nautical": "Cartas náuticas",
+   "ft_measure": "Medir distâncias",
+   "ft_regs": "Regras de pesca",
+   "ft_none": "Nenhum",
+   "ld_t": "Preparando mapas de pesca...",
+   "po_lab": "Você escolheu",
+   "fa_t": "Atividade dos peixes",
+   "fa_ex": "local de exemplo",
+   "fa_st": "Atividade dos peixes muito alta",
+   "fa_major": "Horários principais",
+   "fa_minor": "Horários secundários",
+   "pv_h": "Hoje é grátis.",
+   "pv_s": "Amanhã, o fim de semana e os próximos 3 meses vêm com o Premium.",
+   "pv_c1": "Suas escolhas",
+   "pv_c2": "Grátis",
+   "pv_cta": "Ver o Premium",
+   "pw_back": "Voltar",
+   "pw_restore": "Restaurar",
+   "pw_h": "Desbloqueie o<br>Fishing Points",
+   "pw_tri": "7 dias grátis",
+   "pw_cm": "Pesque mais peixes",
+   "pw_rate": "4,8 · 9.914 avaliações",
+   "pw_dl": "12+ milhões de downloads em iOS e Android",
+   "pw_ton": "Teste grátis ativado",
+   "pw_toff": "Em dúvida? Ative o teste grátis.",
+   "pw_off": "{save} DE DESCONTO",
+   "pw_yr": "Anual",
+   "pw_yr_t": "7 dias grátis, depois {yr}/ano",
+   "pw_yr_n": "{yr}/ano",
+   "pw_yr_pm": "{yrmo}/mês",
+   "pw_mo": "Mensal",
+   "pw_mo_t": "7 dias grátis, depois {mo}/mês",
+   "pw_mo_n": "{mo}/mês",
+   "pw_mo_pm": "{mo}/mês",
+   "pw_cta_t": "Experimente grátis e assine",
+   "pw_cta_n": "Assinar",
+   "pw_trust_t": "Nada a pagar agora · ",
+   "pw_trust": "Cancele quando quiser nos Ajustes",
+   "terms": "Termos de utilização",
+   "privacy": "Política de privacidade",
+   "of_h": "Ainda não quer<br>um ano inteiro?",
+   "of_t": "Experimente o Premium grátis por 7 dias",
+   "of_p": "Depois, {mo}/mês. Sem compromisso.",
+   "of_d0": "Hoje",
+   "of_d7": "Dia 7",
+   "of_d7s": "O plano mensal começa: {mo}/mês",
+   "of_da": "Quando quiser",
+   "of_rv": "“Uma excelente ferramenta! Uso desde 2018 e tenho a versão Premium. Sem arrependimento, vale cada cêntimo.”",
+   "of_rvc": "Alemanha",
+   "of_cta": "Começar minha semana grátis",
+   "of_free": "Continuar com a versão grátis",
+   "ac_h": "Entre no<br>Fishing Points",
+   "ac_p": "Entre ou crie uma conta Fishing Points para nunca perder seus locais de pesca e capturas salvos.",
+   "ac_ap": "Entrar com a Apple",
+   "ac_go": "Entrar com o Google",
+   "ac_fb": "Entrar com o Facebook",
+   "ac_em": "Entrar com e-mail",
+   "ac_nn": "Agora não",
+   "ac_lg": "Ao continuar, você aceita nossos <a>Termos de serviço</a> e a <a>Política de privacidade</a>.",
+   "hm_b": "Tudo pronto.",
+   "hm_s": "Sua compra foi concluída."
+  }
+ },
+ "prices": {
+  "pt": {
+   "yr": "R$ 99,90",
+   "mo": "R$ 19,90",
+   "yrmo": "R$ 8,33",
+   "save": "58%"
+  }
+ },
+ "labelsI18n": {
+  "pt": {
+   "type": {
+    "salt": "Água salgada",
+    "fresh": "Água doce",
+    "both": "Ambos",
+    "not": "Não sou pescador"
+   },
+   "fc": {
+    "radar": "Radar de chuva",
+    "waves": "Ondas",
+    "river": "Dados dos rios",
+    "weather": "Clima",
+    "fishact": "Atividade dos peixes",
+    "tides": "Marés",
+    "sun": "Sol e Lua",
+    "none": "Nenhuma"
+   },
+   "ft": {
+    "locations": "Salvar locais PRIVADOS",
+    "paths": "Gravar trajetos",
+    "catches": "Registrar capturas",
+    "nautical": "Cartas náuticas",
+    "measure": "Medir distâncias",
+    "regs": "Regras de pesca",
+    "none": "Nenhum"
+   }
+  }
+ },
+ "liveUrl": "https://eddieatadapty.github.io/fishing-points-flow-rebuild-v2/",
+ "video": "assets/walkthrough.mp4",
+ "poster": "assets/walkthrough-poster.jpg",
+ "compare": {
+  "today": "today",
+  "proposed": "paywall",
+  "kicker": "The paywall, side by side",
+  "title": "Your paywall today, and proposed.",
+  "sub": "Same art, same prices, same button.",
+  "todayCap": "rebuilt from your recorded flow",
+  "rows": [
+   {
+    "h": "The line under the headline",
+    "idea": 1,
+    "was": "“Know exactly when fish are most active.”, the same for everyone",
+    "now": "Names their trips: “…up to 3 months ahead for your saltwater trips”"
+   },
+   {
+    "h": "Free trial",
+    "idea": 3,
+    "was": "Off by default: “Not sure? Enable Free Trial.” and a Subscribe button",
+    "now": "On by default: “7 days free, then $49.99/year” and “Try free and subscribe”"
+   },
+   {
+    "h": "Proof",
+    "idea": 3,
+    "was": "None on the screen",
+    "now": "★ 4.7 · 230K+ ratings · 12+ million downloads, just above the plans"
+   },
+   {
+    "h": "Under the button",
+    "idea": 3,
+    "was": "Nothing",
+    "now": "“No payment now · Cancel anytime in Settings”"
+   },
+   {
+    "h": "On Back",
+    "idea": 5,
+    "was": "Straight to the map",
+    "now": "One sheet: the $9.99 Monthly plan with its 7 free days as a timeline"
+   }
+  ],
+  "kept": "Kept: the navy hero, the line-art fish and 95 gauge, “Unlock Fishing Points Premium”, “Catch More Fish”, the trial switch, the 58% OFF Yearly card at $4.17/month, Monthly and the blue button."
+ },
+ "tour": {
+  "introLede": "Five ideas to turn more anglers into subscribers. <span>Built into your own onboarding.</span>",
+  "endTitle": "Five ideas, built into your own onboarding.",
+  "segments": [
+   {
+    "id": "welcome",
+    "d": 3200,
+    "st": {
+     "type": null,
+     "fc": [],
+     "ft": [],
+     "ld": 0,
+     "trial": "on",
+     "plan": "year",
+     "paid": "yes"
+    },
+    "tap": [
+     ".ybtn",
+     2600
+    ]
+   },
+   {
+    "id": "type",
+    "d": 1700,
+    "tap": [
+     "[data-pick=\"type:salt\"]",
+     1200
+    ]
+   },
+   {
+    "id": "forecasts",
+    "d": 1300,
+    "st": {
+     "type": "salt"
+    },
+    "tap": [
+     "[data-toggle=\"fc:fishact\"]",
+     900
+    ]
+   },
+   {
+    "id": "forecasts",
+    "d": 1100,
+    "st": {
+     "fc": [
+      "fishact"
+     ]
+    },
+    "tap": [
+     "[data-toggle=\"fc:tides\"]",
+     700
+    ]
+   },
+   {
+    "id": "forecasts",
+    "d": 1100,
+    "st": {
+     "fc": [
+      "fishact",
+      "tides"
+     ]
+    },
+    "tap": [
+     ".qcta",
+     700
+    ]
+   },
+   {
+    "id": "features",
+    "d": 1300,
+    "tap": [
+     "[data-toggle=\"ft:nautical\"]",
+     800
+    ]
+   },
+   {
+    "id": "features",
+    "d": 1000,
+    "st": {
+     "ft": [
+      "nautical"
+     ]
+    },
+    "tap": [
+     ".qcta",
+     600
+    ]
+   },
+   {
+    "id": "loader",
+    "d": 1300,
+    "st": {
+     "ld": 45
+    }
+   },
+   {
+    "id": "loader",
+    "d": 1000,
+    "st": {
+     "ld": 100
+    }
+   },
+   {
+    "id": "payoff",
+    "d": 3000,
+    "pop": ".pl",
+    "tap": [
+     ".qcta",
+     2600
+    ]
+   },
+   {
+    "id": "preview",
+    "d": 3200,
+    "reveal": ".fsheet",
+    "tap": [
+     ".qcta",
+     2800
+    ]
+   },
+   {
+    "id": "paywall",
+    "d": 3400,
+    "tap": [
+     ".pwb",
+     3000
+    ]
+   },
+   {
+    "id": "offer",
+    "d": 2800,
+    "tap": [
+     ".pill",
+     2400
+    ]
+   },
+   {
+    "id": "account",
+    "d": 2400,
+    "tap": [
+     ".b-ap",
+     2000
+    ]
+   },
+   {
+    "id": "home",
+    "d": 1600
+   },
+   {
+    "id": "home",
+    "d": 2400,
+    "end": true
+   }
+  ],
+  "captions": {
+   "welcome": {
+    "k": "Context",
+    "t": "Your welcome, unchanged",
+    "l": "Continue now opens the quiz, not a sign-in."
+   },
+   "type": {
+    "k": "Context",
+    "t": "Your quiz, from screen 2",
+    "l": "Your own questions, moved up five screens."
+   },
+   "forecasts": {
+    "k": "Context",
+    "t": "Which forecasts interest you most?",
+    "l": "What’s ticked here comes back later."
+   },
+   "features": {
+    "k": "Context",
+    "t": "Map features",
+    "l": "Nautical charts: a Premium limit worth naming."
+   },
+   "loader": {
+    "k": "Context",
+    "t": "Your loader, reading answers back",
+    "l": "Same ring, same proof, now personal."
+   },
+   "payoff": {
+    "n": 1,
+    "t": "Use the answers you collect",
+    "l": "Their picks, named, and what each one does.",
+    "o": "+10–20%",
+    "ol": "CR to purchase"
+   },
+   "preview": {
+    "n": 4,
+    "t": "Show what Free leaves out",
+    "l": "Today is free. The rest of the week is Premium.",
+    "o": "+5–15%",
+    "ol": "CR to purchase"
+   },
+   "paywall": {
+    "n": 3,
+    "t": "The free week, switched on",
+    "l": "Trial on by default, 230K+ ratings above the plans.",
+    "o": "+10–20%",
+    "ol": "CR to trial or purchase"
+   },
+   "offer": {
+    "n": 5,
+    "t": "Catch the people who tap Back",
+    "l": "The $9.99 Monthly plan, seven free days first.",
+    "o": "+5–10%",
+    "ol": "CR from people who close"
+   },
+   "account": {
+    "n": 2,
+    "t": "Account after the purchase",
+    "l": "Four sign-up screens moved behind the paywall.",
+    "o": "+5–10%",
+    "ol": "CR to purchase"
+   },
+   "home": {
+    "k": "Context",
+    "t": "Into the app",
+    "l": "Fish activity, the whole week open."
+   }
+  }
+ },
+ "grounding": "Impact ranges are Adapty’s expected effect from teardowns and A/B tests across 30,000+ subscription apps, not measured lift for Fishing Points. They overlap, so they don’t add up.",
+ "sources": [
+  {
+   "group": "Prices",
+   "items": [
+    {
+     "dt": "$49.99 a year · $9.99 a month",
+     "dd": "In-App Purchases on your <a href=\"https://apps.apple.com/us/app/fishing-points-map-forecast/id1203032512\" target=\"_blank\" rel=\"noopener\">US App Store listing</a> (“Yearly Premium”, “Premium”), 29 September 2026, the same prices your onboarding paywall shows."
+    },
+    {
+     "dt": "$4.17 a month · 58% off",
+     "dd": "Printed on your Yearly card. It checks out: $49.99 ÷ 12, and $49.99 against 12 × $9.99 = $119.88."
+    },
+    {
+     "dt": "R$ 99,90 · R$ 19,90 · R$ 8,33 · 58%",
+     "dd": "In-App Purchases on your <a href=\"https://apps.apple.com/br/app/fishing-points-mapa-de-pesca/id1203032512\" target=\"_blank\" rel=\"noopener\">Brazilian App Store listing</a> (“Assinatura Premium anual”, “Premium”); R$ 8,33 and 58% worked out the same way (12 × R$ 19,90 = R$ 238,80)."
+    },
+    {
+     "dt": "7-day free trial",
+     "dd": "Your paywall with the switch on (“7 days free, then $49.99/year”), the App Store sheet (“1-week free trial”) and <a href=\"https://fishingpoints.app/premium/\" target=\"_blank\" rel=\"noopener\">fishingpoints.app/premium</a> (“free 7-day trial”)."
+    },
+    {
+     "dt": "Not used",
+     "dd": "Basic Premium ($29.99 · R$ 44,90) and Advanced Premium ($49.99): on your purchase list, but their contents appear on no screen or page. R$ 8,90 “Premium”: its period isn’t shown."
+    }
+   ]
+  },
+  {
+   "group": "Proof",
+   "items": [
+    {
+     "dt": "4.7 stars · 230K+ ratings · 12+ million downloads",
+     "dd": "<a href=\"https://fishingpoints.app/\" target=\"_blank\" rel=\"noopener\">fishingpoints.app</a> and /premium (“Trusted by millions of anglers around the globe”), iOS and Android combined."
+    },
+    {
+     "dt": "4,8 · 9.914 avaliações (Brazil)",
+     "dd": "Your Brazilian App Store listing (4.81), 29 September 2026, used on the Portuguese paywall. US listing: 4.66 from 30,911 ratings."
+    },
+    {
+     "dt": "The two reviews",
+     "dd": "Quoted word for word from fishingpoints.app (United States) and fishingpoints.app/premium (Germany), and from your own Portuguese versions on fishingpoints.app/pt."
+    }
+   ]
+  },
+  {
+   "group": "Features and copy",
+   "items": [
+    {
+     "dt": "Welcome, quiz, loader, paywall, sign-in",
+     "dd": "Your iOS onboarding as recorded by ScreensDesign (October 2025): headlines, options and buttons are yours, word for word."
+    },
+    {
+     "dt": "Free vs Premium limits",
+     "dd": "Your “What’s Included in Premium” table on fishingpoints.app/premium, in English and in Portuguese."
+    },
+    {
+     "dt": "Toolkit lines",
+     "dd": "Condensed from the feature sections of fishingpoints.app: fish activity, fishing maps, catches, map tools, species & regulations."
+    },
+    {
+     "dt": "Portuguese",
+     "dd": "Where your site has Portuguese (the Premium table, the reviews, “12+ milhões de downloads”), we used it. The rest of the Portuguese in the prototype is our translation, not yours."
+    },
+    {
+     "dt": "New copy",
+     "dd": "Ours: the toolkit and preview headlines, “Today is free.”, the line under the paywall button, “Not ready for a full year?” and “Not now”."
+    }
+   ]
+  },
+  {
+   "group": "Design",
+   "items": [
+    {
+     "dt": "Colours",
+     "dd": "Sampled from your recorded screens: blue #1e74c4, yellow #f8d20b, paywall navy #235d98 → #061e3b, selected row #e3edf9. The Liquid Glass blues come from your fishingpoints.app renders."
+    },
+    {
+     "dt": "Type",
+     "dd": "SF Pro, the iOS system font your app uses, with Inter where SF isn’t available."
+    },
+    {
+     "dt": "Imagery",
+     "dd": "The rod photos, line-art fish, 95 gauge and waves are cut from your recorded screens; the map phone on the toolkit is a fishingpoints.app render. The Fish activity screen is rebuilt from your 4.2.5 render so it can lock days and switch language."
+    }
+   ]
+  },
+  {
+   "group": "What we couldn’t see",
+   "items": [
+    {
+     "dt": "Your current flow",
+     "dd": "The recording predates your 4.2.5 “Liquid Glass” update (August 2026). If onboarding changed since, some “today” details may be out of date."
+    },
+    {
+     "dt": "Your Brazilian paywall",
+     "dd": "The recording is from the US storefront. The Portuguese screens use your Brazilian prices, and we assumed the Monthly plan carries the same 7-day trial there."
+    },
+    {
+     "dt": "The rest of the quiz",
+     "dd": "The prototype shows three of your six questions. Inshore/Offshore, “Why do you go fishing?” and “How often do you fish?” stay as they are."
+    },
+    {
+     "dt": "Account before purchase",
+     "dd": "If an account is required before paying (for example, to share Premium across devices), keep the sheet after the paywall and drop “Not now”."
+    },
+    {
+     "dt": "Example data",
+     "dd": "Tampa, the 98 and the fishing times come from your own Fish activity render and recording. The real screen would use the angler’s spot."
+    }
+   ]
+  }
+ ]
+}
+</script>
+
+<script>
+/* Fishing Points hooks: the quiz answers name the loader, the toolkit, the preview rows and the paywall line.
+   Every Portuguese string here is ours unless it comes from fishingpoints.app/pt (Premium table, reviews). */
+var ICON = {
+  back: '<path d="M15 4.5 7.5 12l7.5 7.5" stroke-width="2.6"/>',
+  check: '<path d="M5 12.5 9.5 17 19 7.5" stroke-width="3"/>',
+  x: '<path d="M7 7l10 10M17 7 7 17" stroke-width="2.4"/>',
+  lock: '<rect x="5" y="10.5" width="14" height="10" rx="2" fill="currentColor" stroke="none"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" stroke-width="2.4"/>',
+  pin: '<path d="M12 21s-6.5-6.2-6.5-11a6.5 6.5 0 0 1 13 0c0 4.8-6.5 11-6.5 11z" fill="currentColor" stroke="none"/><circle cx="12" cy="10" r="2.4" fill="rgba(0,0,0,.35)" stroke="none"/>',
+  pinf: '<path d="M12 20s-5.5-5.4-5.5-9.5a5.5 5.5 0 0 1 11 0C17.5 14.6 12 20 12 20z" fill="currentColor" stroke="none"/><circle cx="12" cy="10.3" r="2" fill="rgba(255,255,255,1)" stroke="none"/><path d="M8 20.5h8" stroke-width="2"/>',
+  bellf: '<path d="M6 10.2a6 6 0 0 1 12 0c0 5 2 6.5 2 6.5H4s2-1.5 2-6.5z" fill="currentColor" stroke="none"/><path d="M10 19.6a2 2 0 0 0 4 0" stroke-width="2"/>',
+  radar: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/><path d="M12 12l5.5-5.5"/>',
+  waves: '<path d="M3 18.5c1.2-6 4.8-10 9.4-10 3.2 0 5.1 2.3 4 4.7-.9 1.9-3.6 2-4.2.1"/>',
+  river: '<path d="M3 8c2-1.6 4-1.6 6 0s4 1.6 6 0 4-1.6 6 0M3 13c2-1.6 4-1.6 6 0s4 1.6 6 0 4-1.6 6 0M3 18c2-1.6 4-1.6 6 0s4 1.6 6 0 4-1.6 6 0"/>',
+  weather: '<circle cx="9" cy="8.5" r="3.2"/><path d="M9 2.5V4M3 8.5h1.5M4.8 4.3l1 1M13.2 4.3l-1 1"/><path d="M7.5 20.5h9.5a3.4 3.4 0 0 0 .4-6.8 4.8 4.8 0 0 0-9.2 1.3 2.8 2.8 0 0 0-.7 5.5z"/>',
+  fishact: '<rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="M12 12.2l1.1 2.1 2.3.3-1.7 1.6.4 2.3-2.1-1.1-2.1 1.1.4-2.3-1.7-1.6 2.3-.3z" stroke-width="1.3"/>',
+  tides: '<path d="M4 3v17.5h17"/><path d="M4 15.5c2.8-6.5 4.8-6.5 7-2.3s4.3 4.2 8.5-5.2"/>',
+  sun: '<path d="M19.5 14.8A8 8 0 1 1 9.2 4.5a6.4 6.4 0 0 0 10.3 10.3z"/>',
+  none: '<rect x="4.5" y="4.5" width="15" height="15" rx="2"/>',
+  locations: '<path d="M12 21s-6.5-6.2-6.5-11a6.5 6.5 0 0 1 13 0c0 4.8-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/>',
+  paths: '<circle cx="5.5" cy="18" r="2"/><circle cx="18.5" cy="6" r="2"/><path d="M7 16.6c2.5-3.6 1.5-6.3 4.5-6.9s4.9 1.2 6-2.3" stroke-dasharray="2 2.2"/>',
+  catches: '<path d="M2.5 12c3-4.6 9-6 14-2.6l4-3v11.2l-4-3c-5 3.4-11 2-14-2.6z"/><circle cx="7.5" cy="11" r=".9" fill="currentColor"/>',
+  nautical: '<path d="M3 6.5 9 4l6 2.5L21 4v13.5L15 20l-6-2.5L3 20z"/><path d="M9 4v13.5M15 6.5V20"/>',
+  measure: '<circle cx="12" cy="4.6" r="1.6"/><path d="M11.2 6.1 6 20.5M12.8 6.1 18 20.5M7.8 15h8.4"/>',
+  regs: '<path d="M12 3l7.5 3v5.5c0 4.6-3.2 8.2-7.5 9.5-4.3-1.3-7.5-4.9-7.5-9.5V6z"/><path d="M12.8 7.2v6.3a2.4 2.4 0 0 1-4.8.3"/>',
+  bell: '<path d="M6 10.2a6 6 0 0 1 12 0c0 5 2 6.5 2 6.5H4s2-1.5 2-6.5z"/><path d="M10 19.6a2 2 0 0 0 4 0"/>',
+  apple: '<path fill="currentColor" stroke="none" d="M16.4 12.6c0-2.4 2-3.5 2-3.6-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.2-2.8.8-3.5.8-.7 0-1.8-.8-3-.8-1.5 0-3 .9-3.8 2.3-1.6 2.8-.4 7 1.2 9.3.8 1.1 1.7 2.4 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3 .7c1.3 0 2.1-1.1 2.8-2.3.9-1.3 1.3-2.5 1.3-2.6 0 0-2.5-1-2.5-3.6zM14.1 5.6c.6-.8 1.1-1.9 1-3-1 0-2.1.7-2.8 1.4-.6.7-1.2 1.8-1 2.9 1 .1 2.1-.5 2.8-1.3z"/>',
+  google: '<path d="M20 12.2c0-.6-.1-1.2-.2-1.7H12v3.3h4.5a3.9 3.9 0 0 1-1.7 2.5v2.1h2.7c1.6-1.5 2.5-3.6 2.5-6.2z" fill="currentColor" stroke="none"/><path d="M12 20.5c2.3 0 4.2-.8 5.5-2.1l-2.7-2.1c-.8.5-1.7.8-2.8.8-2.2 0-4-1.5-4.7-3.4H4.5v2.2a8.5 8.5 0 0 0 7.5 4.6z" fill="currentColor" stroke="none"/><path d="M7.3 13.7a5 5 0 0 1 0-3.4V8.1H4.5a8.5 8.5 0 0 0 0 7.8z" fill="currentColor" stroke="none"/><path d="M12 6.9c1.3 0 2.4.4 3.3 1.3l2.4-2.4A8.4 8.4 0 0 0 4.5 8.1l2.8 2.2C8 8.4 9.8 6.9 12 6.9z" fill="currentColor" stroke="none"/>',
+  facebook: '<circle cx="12" cy="12" r="10" fill="currentColor" stroke="none"/><path d="M13.3 21v-6.6h2.2l.3-2.6h-2.5v-1.6c0-.7.2-1.3 1.3-1.3h1.3V6.6a17 17 0 0 0-2-.1c-2 0-3.3 1.2-3.3 3.4v1.9H8.4v2.6h2.2V21" stroke="none" style="fill:var(--b-fb)"/>',
+  mail: '<rect x="3" y="5.5" width="18" height="13" rx="1.5" fill="currentColor" stroke="none"/><path d="M3.5 6.5l8.5 7 8.5-7" style="stroke:var(--b-mail)" stroke-width="2"/>'
+};
+function svg(k){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + (ICON[k] || '') + '</svg>'; }
+document.querySelectorAll('[data-icon]').forEach(function(el){ el.innerHTML = svg(el.dataset.icon); });
+
+/* what each pick does (condensed from fishingpoints.app) and its Free → Premium limit (fishingpoints.app/premium, EN + their PT) */
+var INFO = {
+  en: {fishact: ['Fish activity', 'When fish will be most active during the day, based on solunar theory, tides and other factors.'],
+       tides: ['Tides', 'High and low tide times and daily extremes.'], waves: ['Waves', 'Wave conditions for the days ahead.'],
+       weather: ['Weather', 'Weather and wind forecast.'], sun: ['Sun and moon', 'Sunrise, sunset, moonrise and moon phase.'],
+       radar: ['Rain radar', 'Real-time rain radar to stay safe on the water.'], river: ['River Data', 'River heights and flows.'],
+       locations: ['Saving PRIVATE locations', 'Save your favorite spots and find them with GPS, compass and maps.'],
+       paths: ['Recording paths', 'Record trotlines and trolling paths.'],
+       catches: ['Logging catches', 'Your fully private catch logbook, with conditions and time added automatically.'],
+       nautical: ['Nautical charts', 'Worldwide nautical charts and detailed satellite images.'],
+       measure: ['Measuring distances', 'Measure map distances between places.'], regs: ['Fishing Regulations', 'Seasons, bag limits and other rules for your area.']},
+  pt: {fishact: ['Atividade dos peixes', 'Em que momento do dia os peixes estão mais ativos, com base na teoria solunar, marés e outros fatores.'],
+       tides: ['Marés', 'Horários de maré alta e baixa e extremos diários.'], waves: ['Ondas', 'Condições das ondas para os próximos dias.'],
+       weather: ['Clima', 'Previsão do clima e do vento.'], sun: ['Sol e Lua', 'Nascer e pôr do sol, nascer da lua e fase da lua.'],
+       radar: ['Radar de chuva', 'Radar de chuva em tempo real para pescar com segurança.'], river: ['Dados dos rios', 'Níveis e fluxo dos rios.'],
+       locations: ['Salvar locais PRIVADOS', 'Salve seus locais favoritos e encontre-os com GPS, bússola e mapa.'],
+       paths: ['Gravar trajetos', 'Grave espinhéis e trajetos de corrico.'],
+       catches: ['Registrar capturas', 'Seu diário de capturas privado, com condições e horário salvos automaticamente.'],
+       nautical: ['Cartas náuticas', 'Cartas náuticas do mundo todo e imagens de satélite detalhadas.'],
+       measure: ['Medir distâncias', 'Meça distâncias entre locais no mapa.'], regs: ['Regras de pesca', 'Temporadas, limites de captura e outras regras da sua região.']}
+};
+var CMP = {
+  en: {fishact: ['Best fishing times', 'Today', '3 months'], tides: ['Tides & daily extremes', 'Today', '3 months'], waves: ['Wave conditions', 'Today', '7 days'],
+       weather: ['Weather & wind', 'Today', '7 days'], sun: ['Sun & moon data', 'Today', '3 months'], radar: ['Rain radar', 'Current', '2 hours'],
+       river: ['River heights & flows', '✕', '✓'], nautical: ['Nautical maps', '✕', '✓'], locations: ['Saving locations', 'Up to 5', 'Unlimited'],
+       paths: ['Trollings / trotlines', 'Up to 5', 'Unlimited']},
+  pt: {fishact: ['Melhores horários de pesca', 'Hoje', '3 meses'], tides: ['Marés e extremos diários', 'Hoje', '3 meses'], waves: ['Condições das ondas', 'Hoje', '7 dias'],
+       weather: ['Meteorologia e vento', 'Hoje', '7 dias'], sun: ['Dados do Sol e da Lua', 'Hoje', '3 meses'], radar: ['Radar de chuva', 'Atual', '2 horas'],
+       river: ['Níveis e fluxo dos rios', '✕', '✓'], nautical: ['Cartas náuticas', '✕', '✓'], locations: ['Salvar locais', 'Até 5', 'Ilimitado'],
+       paths: ['Corricos / espinhéis', 'Até 5', 'Ilimitado']}
+};
+var TODAY = {en: {fishact: '3-month fish activity', tides: '3-month tides', waves: '7-day waves', weather: '7-day weather', sun: '3-month sun & moon', radar: '2-hour rain radar', river: 'river data', nautical: 'nautical maps', locations: 'unlimited locations', paths: 'unlimited paths'},
+             pt: {fishact: 'atividade dos peixes por 3 meses', tides: 'marés por 3 meses', waves: 'ondas por 7 dias', weather: 'clima por 7 dias', sun: 'Sol e Lua por 3 meses', radar: 'radar de chuva de 2 horas', river: 'dados dos rios', nautical: 'cartas náuticas', locations: 'locais ilimitados', paths: 'trajetos ilimitados'}};
+/* their site renders — one per first map pick, listed literally so the publisher ships them */
+var RENDER = {nautical: 'assets/site/Fishing_Points_Nautical3_97b0a0b56e.webp', locations: 'assets/site/Fishing_Points_Satellite1_e113f15de1.webp',
+              paths: 'assets/site/Fishing_Points_Measure_Distance_3dc694a658.webp', measure: 'assets/site/Fishing_Points_Measure_Distance_3dc694a658.webp',
+              catches: 'assets/site/Fishing_Points_Catch_3a2cb7bc7b.webp', regs: 'assets/site/Fishing_Points_Spotted_Seatrout_0772bbe3e7.webp',
+              _: 'assets/site/Fishing_Points_Satellite1_e113f15de1.webp'};
+var DAYS = {en: [['15', 'Sun'], ['16', 'Mon'], ['17', 'Tue'], ['18', 'Today'], ['19', 'Thu'], ['20', 'Fri'], ['21', 'Sat']],
+            pt: [['15', 'dom'], ['16', 'seg'], ['17', 'ter'], ['18', 'Hoje'], ['19', 'qui'], ['20', 'sex'], ['21', 'sáb']]};
+var PROOF = {
+  en: [['12+ million downloads', 'On iOS and Android'], ['★ 4.7 stars', 'Average rating · 230K+ ratings'],
+       ['★★★★★', '“I used and tested many apps but I felt this app to be the most accurate in terms of fish activity. Thanks.” · United States']],
+  pt: [['12+ milhões de downloads', 'Em IOS e Android'], ['★ 4.7 estrelas', 'Avaliação média · 230K+ avaliações'],
+       ['★★★★★', '“Utilizei e testei muitas aplicações, mas achei esta a mais precisa em termos de atividade dos peixes. Obrigado.” · Estados Unidos']]
+};
+function L(){ return S.lang === 'pt' ? 'pt' : 'en'; }
+function picks(){ return (S.fc || []).concat(S.ft || []).filter(function(k){ return k !== 'none'; }); }
+function listOf(a, max, more){ return a.length > max ? a.slice(0, max).join(', ') + ' ' + more.replace('{n}', a.length - max) : a.join(', '); }
+function cmpRows(n){
+  var rows = picks().filter(function(k){ return CMP.en[k]; });
+  ['fishact', 'tides', 'nautical', 'weather', 'locations'].forEach(function(k){ if (rows.indexOf(k) < 0) rows.push(k); });
+  return rows.slice(0, n);
+}
+function days(el, locked){
+  el.innerHTML = DAYS[L()].map(function(d, i){
+    var c = i < 3 ? 'past' : i === 3 ? 'now' : (locked ? 'lk' : '');
+    return '<div class="' + c + '">' + (c === 'lk' ? '<i>' + svg('lock') + '</i>' : '') + d[0] + '<small>' + d[1] + '</small></div>';
+  }).join('');
+}
+function $$(id){ return document.getElementById(id); }
+window.onSync = function(S){
+  var l = L(), P = picks(), lab = C.labels;
+  var TW = {en: {salt: 'saltwater', fresh: 'freshwater', both: 'saltwater & freshwater'}, pt: {salt: 'água salgada', fresh: 'água doce', both: 'água salgada e doce'}}[l][S.type] || '';
+  /* loader: ring + read-back + the proof they already cycle */
+  var ld = S.ld == null ? 0 : S.ld;
+  $$('ldRing').setAttribute('stroke-dashoffset', (351.9 * (1 - ld / 100)).toFixed(1));
+  $$('ldPct').textContent = Math.round(ld) + '%';
+  var fcs = (S.fc || []).filter(function(k){ return k !== 'none'; }).map(function(k){ return lab.fc[k]; });
+  var fts = (S.ft || []).filter(function(k){ return k !== 'none'; }).map(function(k){ return lab.ft[k]; });
+  var more = l === 'pt' ? '+{n}' : '+{n} more';
+  $$('ldE1').textContent = l === 'pt' ? (TW ? 'Locais de ' + TW : 'Mapas de pesca da sua região') : (TW ? TW.charAt(0).toUpperCase() + TW.slice(1) + ' spots' : 'Fishing maps for your area');
+  $$('ldE2').textContent = fcs.length ? (l === 'pt' ? 'Previsões: ' + listOf(fcs, 3, more) : listOf(fcs, 3, more) + ' forecasts') : (l === 'pt' ? 'Previsões de hoje' : 'Today’s forecasts');
+  $$('ldE3').textContent = fts.length ? listOf(fts, 2, more) : (l === 'pt' ? 'Ferramentas de mapa' : 'Map tools');
+  document.querySelectorAll('#ldEcho li').forEach(function(li, i){ li.classList.toggle('done', ld >= [30, 62, 94][i]); });
+  var pr = PROOF[l][ld < 45 ? 0 : ld < 85 ? 1 : 2], pe = $$('ldProof');
+  pe.querySelector('b').textContent = pr[0]; pe.querySelector('span').textContent = pr[1];
+  /* payoff: their picks, named, in the site's own words */
+  $$('poH').textContent = l === 'pt' ? (TW ? 'Seu kit para ' + TW : 'Seu kit de pesca') : 'Your ' + (TW || 'fishing') + ' toolkit';
+  var tl = S.type ? lab.type[S.type] : '';
+  $$('poMeta').textContent = [tl, P.length ? P.length + (l === 'pt' ? (P.length === 1 ? ' escolha' : ' escolhas') : (P.length === 1 ? ' pick' : ' picks')) : ''].filter(Boolean).join(' · ');
+  var show = (P.length ? P : ['fishact', 'weather', 'locations']).slice(0, 4);
+  $$('poList').innerHTML = show.map(function(k){ return '<div class="r"><i class="ic">' + svg(k) + '</i><div><b>' + INFO[l][k][0] + '</b><small>' + INFO[l][k][1] + '</small></div></div>'; }).join('');
+  var mp = (S.ft || []).filter(function(k){ return RENDER[k]; })[0];
+  $$('poImg').setAttribute('src', RENDER[mp] || RENDER._);
+  /* preview + home: their Fish activity, today free, the rest locked */
+  days($$('pvDays'), true); days($$('hmDays'), false);
+  $$('pvRows').innerHTML = cmpRows(3).map(function(k){ var r = CMP[l][k]; return '<div class="r"><span>' + r[0] + '</span><span>' + r[1] + '</span><span>' + r[2] + '</span></div>'; }).join('');
+  /* paywall: the line under "Catch More Fish" names their trips */
+  var trip = l === 'pt' ? (S.type === 'not' || !TW ? 'suas pescarias' : 'suas pescarias em ' + TW) : (S.type === 'not' || !TW ? 'your fishing trips' : 'your ' + TW + ' trips');
+  $$('pwSub').textContent = l === 'pt' ? 'Saiba exatamente quando os peixes estão mais ativos, com até 3 meses de antecedência para ' + trip + '.'
+                                       : 'Know exactly when fish are most active, up to 3 months ahead for ' + trip + '.';
+  $$('pwSw').classList.toggle('on', S.trial === 'on');
+  $$('ofToday').textContent = (l === 'pt' ? 'Premium completo: ' : 'Full Premium: ') + cmpRows(3).map(function(k){ return TODAY[l][k]; }).join(', ');
+  document.querySelectorAll('.ftt').forEach(function(e){ e.classList.toggle('long', l === 'pt'); });
+  var ph = document.querySelector('.phone-in'); if (ph) ph.classList.toggle('lightbar', ['preview', 'paywall', 'offer', 'home'].indexOf(cur) > -1);
+};
+
+/* "None" is exclusive in both multi-selects; the trial row is a switch */
+window.addEventListener('click', function(e){          /* window: runs after the engine's document listener has toggled */
+  var el = e.target.closest('[data-toggle]'); if (!el) return;
+  var q = el.dataset.toggle.split(':'), a = S[q[0]] || [];
+  if (q[1] === 'none' && a.indexOf('none') > -1) S[q[0]] = ['none'];
+  else if (q[1] !== 'none') S[q[0]] = a.filter(function(x){ return x !== 'none'; });
+  sync();
+});
+document.addEventListener('click', function(e){ if (e.target.closest('[data-trial]')) { S.trial = S.trial === 'on' ? 'off' : 'on'; sync(); } });
+
+var ldTimer = null;
+window.onEnter = function(id){
+  var ph = document.querySelector('.phone-in'); if (ph) ph.classList.toggle('lightbar', ['preview', 'paywall', 'offer', 'home'].indexOf(id) > -1);
+  clearInterval(ldTimer);
+  if (id !== 'loader') return;
+  if (SHOT) { S.ld = HERO ? 100 : 91; sync(); return; }          /* their recorded frame shows 91% */
+  S.ld = 0; sync();
+  var t0 = Date.now(), dur = 4200;
+  ldTimer = setInterval(function(){
+    var k = Math.min(1, (Date.now() - t0) / dur); S.ld = k * 100; sync();
+    if (k >= 1){ clearInterval(ldTimer); setTimeout(function(){ if (cur === 'loader') go('payoff'); }, 500); }
+  }, 60);
+};
+</script>
+<script>
+/* ============ engine — generic, do not fork per app ============ */
+var C = JSON.parse(document.getElementById('content').textContent);
+var S = C.state, scr = {}, ORDER = [], hist = [], cur = null, Q = location.search;
+var SHOT = /[?&](shot|phone|tour)\b/.test(Q), HERO = /[?&]hero\b/.test(Q);
+/* a screen with data-aside (e.g. the paywall TODAY for the side-by-side) renders for stills but is not part of the flow */
+document.querySelectorAll('.scr').forEach(function(s){ scr[s.dataset.id] = s; if (!s.hasAttribute('data-aside')) ORDER.push(s.dataset.id); });
+if (/[?&]shot\b/.test(Q)) document.documentElement.classList.add('shot');
+if (/[?&]phone\b/.test(Q)) document.documentElement.classList.add('shot', 'phoneonly');
+if (/[?&]clear\b/.test(Q)) document.documentElement.classList.add('clear');
+var IDEAS = (C.ideas || []).length;
+
+/* ---- languages: markup is the first language; C.i18n[lang][data-t key] the others; {tokens} from C.prices[lang] ---- */
+var LANGS = C.langs || [], BASE = LANGS.length ? LANGS[0].code : 'en', LANG_DONE = BASE, BASE_LABELS = JSON.parse(JSON.stringify(C.labels || {}));
+if (!S.lang) S.lang = BASE;
+function fillP(s, l){ var P = (C.prices || {})[l] || {}; return String(s).replace(/\{(\w+)\}/g, function(m, k){ return k in P ? P[k] : m; }); }
+function applyLang(){
+  var l = S.lang || BASE; if (l === LANG_DONE) return;
+  var T = (C.i18n || {})[l] || {};
+  document.querySelectorAll('.phone [data-t]').forEach(function(el){
+    if (el._base == null) el._base = el.innerHTML;
+    el.innerHTML = l === BASE || T[el.dataset.t] == null ? el._base : fillP(T[el.dataset.t], l);
+  });
+  C.labels = JSON.parse(JSON.stringify(BASE_LABELS));
+  var LL = (C.labelsI18n || {})[l] || {}; Object.keys(LL).forEach(function(k){ C.labels[k] = LL[k]; });
+  LANG_DONE = l;
+}
+function setLang(l){
+  if (!LANGS.some(function(x){ return x.code === l; })) return;
+  S.lang = l; sync();
+  document.querySelectorAll('[data-setlang]').forEach(function(b){ b.classList.toggle('on', b.dataset.setlang === l); });
+  if (window.onLang) window.onLang(l);
+}
+
+function lab(key){ var v = S[key]; var L = C.labels[key]; if (Array.isArray(v)) return v.map(function(x){ return L && L[x] || x; }).join(', '); return (L && L[v]) || v; }
+function sync(){
+  applyLang();
+  document.querySelectorAll('[data-bind]').forEach(function(el){
+    var b = el.dataset.bind, m = b.split(':');
+    el.textContent = m[0] === 'label' ? lab(m[1]) : m[0] === 'count' ? (S[m[1]] || []).length : (S[b] == null ? '' : S[b]);
+  });
+  document.querySelectorAll('[data-pick]').forEach(function(el){ var p = el.dataset.pick.split(':'); el.classList.toggle('on', S[p[0]] === p[1]); });
+  document.querySelectorAll('[data-toggle]').forEach(function(el){ var p = el.dataset.toggle.split(':'); el.classList.toggle('on', (S[p[0]] || []).indexOf(p[1]) > -1); });
+  document.querySelectorAll('[data-requires]').forEach(function(el){ el.disabled = !(S[el.dataset.requires] || []).length; });
+  document.querySelectorAll('[data-show]').forEach(function(el){ var p = el.dataset.show.split(':'); el.style.display = String(S[p[0]]) === p[1] ? '' : 'none'; });
+  if (window.onSync) window.onSync(S);
+}
+function show(id, dir){
+  var from = scr[cur], to = scr[id]; if (!to || id === cur) return;
+  var sheet = to.classList.contains('sheet');
+  if (from){
+    from.classList.remove('is-active');
+    if (sheet) from.classList.add('under');                                   /* a sheet slides up over the screen that opened it */
+    else if (dir === 'fwd' && !from.classList.contains('sheet')) from.classList.add('is-past');
+  }
+  if (!sheet) Object.keys(scr).forEach(function(k){ var u = scr[k]; if (u !== to && u.classList.contains('under')) { u.classList.remove('under'); if (dir === 'fwd') u.classList.add('is-past'); } });
+  to.classList.remove('is-past', 'under'); to.classList.add('is-active'); cur = id;
+  paint(); if (window.onEnter) window.onEnter(id, S);
+}
+function go(id){ if (cur) hist.push(cur); show(id, 'fwd'); }
+function back(){ if (hist.length) { var p = hist.pop(); scr[cur].classList.remove('is-active'); show(p, 'back'); } }
+function jump(id){
+  Object.keys(scr).forEach(function(k){ scr[k].classList.add('nofx'); scr[k].classList.remove('is-active', 'is-past', 'under'); });
+  var i = ORDER.indexOf(id); hist = ORDER.slice(0, i < 0 ? 0 : i); cur = null;
+  ORDER.slice(0, i).forEach(function(k){ if (!scr[k].classList.contains('sheet')) scr[k].classList.add('is-past'); });
+  if (scr[id] && scr[id].classList.contains('sheet')) {                        /* jumping to a sheet: its opener stays visible under it */
+    for (var j = i - 1; j >= 0; j--) if (!scr[ORDER[j]].classList.contains('sheet')) { scr[ORDER[j]].classList.remove('is-past'); scr[ORDER[j]].classList.add('under'); break; }
+  }
+  show(id, 'jump');
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){ Object.keys(scr).forEach(function(k){ scr[k].classList.remove('nofx'); }); }); });
+}
+function stepBy(d){ var i = ORDER.indexOf(cur) + d; if (i >= 0 && i < ORDER.length) jump(ORDER[i]); }
+function jumpTo(id){
+  var p = document.getElementById('prototype');
+  if (p && !document.documentElement.classList.contains('appmode')) p.scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start'});
+  jump(id);
+}
+function paint(){
+  sync();
+  var c = document.getElementById('chips');
+  if (!c.childElementCount) ORDER.forEach(function(id){
+    var p = C.panel[id] || {}, b = document.createElement('button');
+    b.className = 'au-chip'; b.type = 'button'; b.dataset.id = id; b.setAttribute('role', 'tab');
+    b.innerHTML = (p.idea ? '<i>' + p.idea + '</i>' : '') + ((C.chips && C.chips[id]) || id);
+    b.onclick = function(){ jump(id); };
+    c.appendChild(b);
+  });
+  c.querySelectorAll('.au-chip').forEach(function(b){ var on = b.dataset.id === cur; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
+  var d = C.panel[cur] || {t: cur, why: ''}, n = ORDER.indexOf(cur) + 1;
+  document.getElementById('panel').innerHTML =
+    (d.idea ? '<div class="au-pn-k"><i></i>Idea ' + d.idea + ' of ' + IDEAS + '</div>' : '<div class="au-pn-k au-ctx"><i></i>Context</div>') +
+    '<h3 class="au-pn-t">' + d.t + '</h3><p class="au-pn-h">' + d.why + '</p>' +
+    (d.iv ? '<div class="au-pn-o"><div class="au-lab">Potential outcome · based on Adapty data</div><div class="au-val"><mark>' + d.iv + '</mark></div><div class="au-sub">' + (d.il || '') + '</div></div>' : '') +
+    (d.also ? '<p class="au-pn-a">' + d.also + '</p>' : '') +
+    '<div class="au-pn-nav"><button type="button" onclick="stepBy(-1)"' + (n <= 1 ? ' disabled' : '') + '>‹ Previous</button><span>Screen ' + n + ' of ' + ORDER.length + '</span><button type="button" onclick="stepBy(1)"' + (n === ORDER.length ? ' disabled' : '') + '>Next ›</button></div>';
+  var ab = document.getElementById('abT'); if (ab) ab.textContent = (d.idea ? 'Idea ' + d.idea + ' of ' + IDEAS + ' · ' : '') + (d.t || '');
+}
+document.addEventListener('click', function(e){
+  var j = e.target.closest('[data-jumpto]'); if (j){ e.preventDefault(); jumpTo(j.dataset.jumpto); return; }
+  var L = e.target.closest('[data-setlang]'); if (L){ setLang(L.dataset.setlang); return; }
+  if (e.target.closest('[data-langtoggle]') && LANGS.length > 1){ var k = LANGS.findIndex(function(x){ return x.code === S.lang; }); setLang(LANGS[(k + 1) % LANGS.length].code); return; }
+  var el = e.target.closest('[data-go],[data-back],[data-pick],[data-toggle]'); if (!el) return;
+  if (el.dataset.pick){ var p = el.dataset.pick.split(':'); S[p[0]] = p[1]; sync(); if (el.dataset.advance) setTimeout(function(){ go(el.dataset.advance); }, 170); return; }
+  if (el.dataset.toggle){ var q = el.dataset.toggle.split(':'), a = S[q[0]] = S[q[0]] || [], i = a.indexOf(q[1]); if (i > -1) a.splice(i, 1); else a.push(q[1]); sync(); return; }
+  if ('back' in el.dataset) return back();
+  go(el.dataset.go);
+});
+document.querySelectorAll('[data-input]').forEach(function(inp){
+  inp.value = S[inp.dataset.input] || ''; inp.addEventListener('input', function(){ S[inp.dataset.input] = inp.value.trim() || 'there'; sync(); });
+});
+function $(id){ return document.getElementById(id); }
+
+/* hero stills, shortlist, outcome, sources — from CONTENT */
+$('heroPhones').innerHTML = (C.hero || []).map(function(id, i){
+  var pos = ['l', 'c', 'r'][i] || 'r', t = (C.chips && C.chips[id]) || id;
+  return '<button class="au-hp au-' + pos + '" data-jumpto="' + id + '" aria-label="Open ' + t + '"><img src="assets/hero/' + id + '.png" alt=""></button>';
+}).join('');
+$('ideaList').innerHTML = (C.ideas || []).map(function(r, i){
+  return '<article class="au-idea"><div class="au-num">0' + (i + 1) + '</div><div><h3>' + r.title + '</h3><p>' + r.what + '</p>' +
+    '<button type="button" class="au-lnk" data-jumpto="' + r.screen + '">See it on the screen</button></div>' +
+    '<div class="au-imp"><div class="au-v"><mark>' + r.impact + '</mark></div><div class="au-l">' + r.il + '</div></div></article>';
+}).join('');
+var O = C.outcome || {};
+$('bandNums').innerHTML =
+  (O.cr ? '<div><small>up to</small><b>' + O.cr + '</b><span>CR to purchase</span></div>' : '') +
+  (O.arpu ? '<div><small>up to</small><b>' + O.arpu + '</b><span>ARPU</span></div>' : '');
+$('bandFn').textContent = C.grounding;
+$('fine').textContent = C.grounding + ' Prepared by Adapty.';
+$('srcBody').innerHTML = C.sources.map(function(g){
+  return '<div><h4>' + g.group + '</h4><dl>' + g.items.map(function(it){ return '<dt>' + it.dt + '</dt><dd>' + it.dd + '</dd>'; }).join('') + '</dl></div>';
+}).join('');
+function openSrc(){ var d = $('srcDetails'); d.open = true; d.scrollIntoView({block: 'start'}); }
+
+/* ---- extras: language control, the paywall side by side, QR / phone view, the video ---- */
+if (LANGS.length > 1) {
+  $('langRow').hidden = false;
+  var lb = LANGS.map(function(x){ return '<button type="button" data-setlang="' + x.code + '">' + x.name + '</button>'; }).join('');
+  $('langSw').innerHTML = lb;
+  $('abLang').innerHTML = LANGS.map(function(x){ return '<button type="button" data-setlang="' + x.code + '">' + x.code.toUpperCase() + '</button>'; }).join('');
+}
+var CM = C.compare;
+if (CM && scr[CM.today] && scr[CM.proposed]) {
+  $('compare').hidden = false; $('navCompare').hidden = false;
+  $('cmpBody').innerHTML = '<div class="au-ideas-h"><p class="au-kicker">' + (CM.kicker || 'The paywall, side by side') + '</p><h2 class="au-h2">' + (CM.title || 'Today and proposed.') + (CM.sub ? ' <span>' + CM.sub + '</span>' : '') + '</h2></div>' +
+    '<div class="au-cmp"><figure><img src="assets/hero/' + CM.today + '.png" alt="Your paywall today"><figcaption>Today <span>· ' + (CM.todayCap || 'rebuilt from your recording') + '</span></figcaption></figure>' +
+    '<ol class="au-chg">' + (CM.rows || []).map(function(r){
+      return '<li><h4>' + r.h + (r.idea ? ' <i>Idea ' + r.idea + '</i>' : '') + '</h4><span class="au-was"><em>Today</em>' + r.was + '</span><span class="au-now"><em>Proposed</em>' + r.now + '</span></li>';
+    }).join('') + '</ol>' +
+    '<figure><button type="button" class="au-cmp-go" data-jumpto="' + CM.proposed + '" aria-label="Open the proposed paywall"><img src="assets/hero/' + CM.proposed + '.png" alt="The proposed paywall"></button><figcaption>Proposed <span>· tap to try it</span></figcaption></figure></div>' +
+    (CM.kept ? '<p class="au-kept">' + CM.kept + '</p>' : '');
+}
+if (C.liveUrl) { $('qrCard').hidden = false; $('qrMob').hidden = false; }
+if (/[?&]app\b/.test(Q)) {
+  var H0 = document.documentElement; H0.classList.add('appmode');
+  var openP = function(o){ H0.classList.toggle('au-open', o); $('abWhy').querySelector('em').textContent = o ? 'Close ↓' : 'Why ↑'; };
+  $('abWhy').onclick = function(){ openP(!H0.classList.contains('au-open')); };
+  $('abScrim').onclick = function(){ openP(false); };
+}
+if (C.video) {
+  var dlg = $('vid'), vel = $('vidEl'); vel.src = C.video; if (C.poster) vel.poster = C.poster; $('vidDl').href = C.video;
+  $('heroVideo').hidden = false;
+  $('heroVideo').onclick = function(){ dlg.showModal(); vel.play().catch(function(){}); };
+  $('vidX').onclick = function(){ dlg.close(); };
+  dlg.addEventListener('close', function(){ vel.pause(); });
+  dlg.addEventListener('click', function(e){ if (e.target === dlg) dlg.close(); });
+}
+
+/* ---- ?tour: a deterministic walkthrough from C.tour — tourAt(ms) paints one frame; record-video.sh records it ---- */
+function tourInit(){
+  var T = C.tour, H = document.documentElement, TR = T.transition || 360;
+  H.classList.add('tourmode', 'shot'); document.body.classList.add('nofx');
+  var SEG = T.segments, START = [], STATE = [], UNDER = [], acc = 0, st = JSON.parse(JSON.stringify(C.state));
+  SEG.forEach(function(s, i){
+    START.push(acc); acc += s.d;
+    Object.keys(s.st || {}).forEach(function(k){ st[k] = s.st[k]; }); STATE.push(JSON.parse(JSON.stringify(st)));
+    var u = null; if (scr[s.id].classList.contains('sheet')) for (var j = i - 1; j >= 0; j--) if (!scr[SEG[j].id].classList.contains('sheet')) { u = SEG[j].id; break; }
+    UNDER.push(u);
+  });
+  var TOTAL = acc, capEl = $('tCap'), tap = $('tTap'), pressed = null, popped = [];
+  $('tIntro').innerHTML = '<p class="au-eyebrow"><i></i>' + document.querySelector('.au-top-hero .au-eyebrow').textContent + '</p><h1 class="au-display">' + C.app + '</h1>' +
+    '<p class="au-lede">' + (T.introLede || document.querySelector('.au-top-hero .au-lede').innerHTML) + '</p>';
+  $('tEnd').innerHTML = '<p class="au-eyebrow"><i></i>Growth Audit · ' + C.app + '</p><h2 class="au-te-h">' + (T.endTitle || 'Five ideas, built into your own onboarding.') + '</h2>' +
+    '<div class="au-te-n">' + (O.cr ? '<div><small>up to</small><b>' + O.cr + '</b><span>CR to purchase</span></div>' : '') + (O.arpu ? '<div><small>up to</small><b>' + O.arpu + '</b><span>ARPU</span></div>' : '') + '</div>' +
+    (C.liveUrl ? '<div class="au-te-q"><img src="assets/qr-app.png" alt=""><div><b>Try it on your phone</b><span>' + C.liveUrl.replace(/^https?:\/\//, '').replace(/\/$/, '') + '</span></div></div>' : '') +
+    '<p class="au-te-f">' + C.grounding + '</p>';
+  function ease(x){ return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; }
+  function easeBack(x){ var c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); }
+  function capHTML(c){
+    c = c || {k: '', t: '', l: ''};
+    return '<div class="au-tk' + (c.n ? '' : ' au-ctx') + '"><i></i>' + (c.n ? 'Idea ' + c.n + ' of ' + IDEAS : (c.k || 'Context')) + '</div><h2 class="au-tt">' + c.t + '</h2><p class="au-tl">' + (c.l || '') + '</p>' +
+      (c.o ? '<div class="au-to"><small>Potential outcome · based on Adapty data</small><b><mark>' + c.o + '</mark></b><span>' + (c.ol || '') + '</span></div>' : '');
+  }
+  function place(id, tf, z){ scr[id].style.transform = tf; scr[id].style.zIndex = z; }
+  window.TOUR_MS = TOTAL;
+  window.tourAt = function(ms){
+    ms = Math.max(0, Math.min(TOTAL - 1, ms));
+    var i = 0; while (i < SEG.length - 1 && ms >= START[i + 1]) i++;
+    var s = SEG[i], local = ms - START[i], prev = i > 0 ? SEG[i - 1] : null;
+    Object.keys(STATE[i]).forEach(function(k){ S[k] = STATE[i][k]; }); sync();
+    var moving = prev && prev.id !== s.id && local < TR, p = moving ? ease(local / TR) : 1;
+    Object.keys(scr).forEach(function(k){ scr[k].classList.remove('is-active', 'is-past', 'under'); place(k, 'translateX(100%)', 0); });
+    var B = scr[s.id];
+    if (moving) {
+      if (B.classList.contains('sheet')) { place(prev.id, 'none', 1); B.style.transform = 'translateY(' + (1 - p) * 100 + '%)'; }
+      else {
+        var slide = 'translateX(' + (-28 * p) + '%)'; place(prev.id, slide, 1); B.style.transform = 'translateX(' + (1 - p) * 100 + '%)';
+        if (UNDER[i - 1]) place(UNDER[i - 1], slide, 0);
+      }
+    } else B.style.transform = 'none';
+    B.style.zIndex = 2;
+    if (UNDER[i] && !moving) place(UNDER[i], 'none', 1);
+    /* optional reveal: s.pop scales an element in, s.reveal fades one in a beat later */
+    popped.forEach(function(e){ e.style.transform = ''; e.style.opacity = ''; }); popped = [];
+    var q = Math.max(0, Math.min(1, (local - 250) / 550));
+    if (s.pop) { var pe = B.querySelector(s.pop); if (pe) { pe.style.transform = 'scale(' + (.55 + .45 * easeBack(q)) + ')'; pe.style.opacity = Math.min(1, q * 1.6); popped.push(pe); } }
+    if (s.reveal) { var re = B.querySelector(s.reveal); if (re) { re.style.opacity = Math.max(0, Math.min(1, (local - 520) / 300)); popped.push(re); } }
+    /* caption crossfades at screen changes; waits for the intro, gives way to the end card */
+    var key = s.id, op = 1;
+    if (moving) { if (p < .5) { key = prev.id; op = 1 - p * 2; } else op = p * 2 - 1; }
+    if (capEl.dataset.k !== key) { capEl.innerHTML = capHTML(T.captions[key]); capEl.dataset.k = key; }
+    var io = ms < 1100 ? 1 : Math.max(0, 1 - (ms - 1100) / 300), eo = s.end ? Math.min(1, local / 350) : 0;
+    capEl.style.opacity = op * Math.max(0, Math.min(1, (ms - 1400) / 300)) * (1 - eo);
+    /* the finger: fades in, taps, ripples out. Selectors are scoped to the screen */
+    tap.style.opacity = 0; if (pressed) { pressed.style.opacity = ''; pressed = null; }
+    if (s.tap) {
+      var el = B.querySelector(s.tap[0]), dt = local - s.tap[1];
+      if (el && dt > -260 && dt < 420) {
+        var r = el.getBoundingClientRect();
+        tap.style.left = (r.left + r.width / 2) + 'px'; tap.style.top = (r.top + r.height / 2) + 'px';
+        if (dt < 0) { tap.style.opacity = (dt + 260) / 260 * .9; tap.style.transform = 'scale(1)'; }
+        else { tap.style.opacity = .9 * (1 - dt / 420); tap.style.transform = 'scale(' + (1 + dt / 420 * .9) + ')'; }
+        if (dt >= 0 && dt < 160) { el.style.opacity = .72; pressed = el; }
+      }
+    }
+    $('tIntro').style.opacity = T.intro === false ? 0 : io;
+    $('tEnd').style.opacity = eo;
+    $('tProg').style.width = (ms / TOTAL * 100) + '%';
+    cur = s.id;
+    return i;
+  };
+  var tm = /[?&]t=(\d+)/.exec(Q); tourAt(tm ? +tm[1] : 0);
+}
+
+/* boot: #<screen-id> deep-links a screen (shoot.sh / hero-stills.sh use it); ?lang=xx picks the language */
+(function(){
+  var lm = /[?&]lang=(\w+)/.exec(Q); if (lm) setLang(lm[1]); else setLang(S.lang);
+  var h = location.hash.slice(1);
+  jump(scr[h] ? h : ORDER[0]);
+  if (scr[h] && !SHOT && !document.documentElement.classList.contains('appmode')) setTimeout(function(){ $('prototype').scrollIntoView(); }, 0);
+  if (/[?&]tour\b/.test(Q) && C.tour) tourInit();
+})();
+</script>
+</body>
+</html>
